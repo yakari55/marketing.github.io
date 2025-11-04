@@ -7,72 +7,77 @@
     body {
         font-family: Arial, sans-serif;
         text-align: center;
-        padding: 10px; /* Reducimos el padding general para móviles */
+        padding: 10px;
         background-color: #f0f0f0;
-        margin: 0; /* Asegura que no haya márgenes externos */
-        box-sizing: border-box; /* Asegura que padding y borde no aumenten el tamaño total */
+        margin: 0;
+        box-sizing: border-box;
     }
     
     /* 2. ESTILOS DEL MENSAJE */
     .mensaje {
-        font-size: 1em; /* Ajustamos el tamaño de fuente */
+        font-size: 1em; 
         color: #333;
         margin-bottom: 15px;
-        padding: 0 10px; /* Pequeño padding horizontal para evitar que el texto toque los bordes */
+        padding: 0 10px;
     }
 
     .mensaje h1 {
-        font-size: 1.5em; /* Títulos más pequeños para móviles */
+        font-size: 1.5em;
         margin-top: 10px;
     }
 
-    /* 3. CONTENEDOR DE VIDEO Y ADAPTABILIDAD */
+    /* 3. CONTENEDOR DE VIDEO Y ADAPTABILIDAD BASE (Móviles) */
     #video-wrapper {
         position: relative;
-        /* El max-width mantiene el límite en pantallas grandes, pero usamos width: 100% para ocupar toda la pantalla */
-        max-width: 600px; 
-        width: 70%; /* Ocupa el 95% del ancho de la pantalla (deja un pequeño margen a los lados) */
+        max-width: 600px; /* Limite máximo para el video */
+        width: 95%; 
         margin: 0 auto;
         background-color: black;
+        /* IMPORTANTE: Usamos Aspect Ratio para que la altura sea proporcional al ancho (16:9) */
+        aspect-ratio: 16 / 9; 
     }
 
     #video-player {
-        width: 100%; /* El video siempre ocupa el 100% del contenedor */
-        height: auto;
+        width: 100%; 
+        height: 100%; /* El video ocupa 100% de la altura del contenedor (16:9) */
         display: block;
+        object-fit: cover; /* Asegura que el video cubra el contenedor sin barras negras */
     }
 
-    /* 4. ESTILOS DEL LOGO SUPERPUESTO (Responsive) */
+    /* 4. ESTILOS DEL LOGO SUPERPUESTO */
     #logo-overlay {
         position: absolute;
-        top: 5px;   /* Reducimos el margen superior */
-        left: 5px;  /* Reducimos el margen izquierdo */
+        top: 5px;
+        left: 5px;
         z-index: 10;
         background-color: rgba(255, 255, 255, 0.7);
-        padding: 3px; /* Reducimos el padding */
+        padding: 3px;
         border-radius: 5px;
     }
 
     #logo {
-        max-width: 90px; /* Reducimos el tamaño máximo del logo para móviles */
+        max-width: 80px;
         height: auto;
         display: block;
     }
 
-    /* 5. MEDIA QUERIES (Ajustes específicos para pantallas grandes/tablets) */
+    /* 5. MEDIA QUERIES (Ajustes para Tablets y Laptops) */
     @media (min-width: 768px) {
-        /* Para pantallas con un ancho mayor a 768px (tablets y escritorio) */
+        /* Ajuste para pantallas grandes */
         body {
             padding: 30px;
         }
         .mensaje h1 {
-            font-size: 2em; /* Restauramos un tamaño de título más grande */
+            font-size: 2em;
         }
         #video-wrapper {
-            width: 80%; /* Ocupa un poco más de espacio en el centro */
+            /* Permitimos que ocupe más espacio en el centro para pantallas grandes */
+            width: 80%; 
+            /* Para laptops, aseguramos que el max-width no sea demasiado grande en relación al padding del body */
+            max-width: 900px; 
         }
         #logo {
-            max-width: 100px; /* Volvemos al tamaño de logo original o ligeramente mayor */
+            max-width: 100px;
         }
     }
 </style>
