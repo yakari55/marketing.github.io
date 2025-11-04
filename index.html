@@ -38,6 +38,12 @@
         margin: 1vh 0; /* Ajuste de margen para mejor espaciado */
     }
 
+    .modelo-frase {
+    font-size: 4.5vw; /* Tamaño más grande y proporcional al móvil */
+    font-weight: bold; /* Pone toda la frase en negrita */
+    margin: 1vh 0; /* Margen para centrar verticalmente */
+    }
+
 
     /* 3. CONTENEDOR DE VIDEO Y ADAPTABILIDAD */
     #video-wrapper {
@@ -84,6 +90,12 @@
         .mensaje h1 {
             font-size: 32px; /* Establecemos un tamaño de fuente fijo para que no crezca demasiado */
         }
+
+        .modelo-frase {
+        font-size: 26px; /* Aumenta el tamaño de la frase completa a un valor fijo de 26px */
+        text-transform: capitalize;
+        }
+        
         .mensaje p {
             font-size: 24px; /* Aumenta el tamaño del párrafo a un valor fijo de 24px */
         }
@@ -105,7 +117,7 @@
     </div>
 
     <div class="mensaje">
-        <p>Estás viendo el modelo <span id="modelo-nombre"></span></p>
+        <h3 class="modelo-frase">Estás viendo el modelo <span id="modelo-nombre"></span></p></h3>
     </div>
 
     <video id="video-player" controls autoplay muted>
@@ -124,6 +136,8 @@
             // **IMPORTANTE: AJUSTAR ESTAS RUTAS DE ARCHIVOS**
             const rutaLogos = './cliente/'; // Ejemplo: /logos/
             const rutaVideos = './video/'; // Ejemplo: /videos/
+
+            const modeloCapitalizado = modeloID.charAt(0).toUpperCase() + modeloID.slice(1).toLowerCase();
 
             // URL COMPLETA DEL LOGO (Ej: /logos/CL-001.png)
             const urlLogo = rutaLogos + distribuidorID + '.png'; 
