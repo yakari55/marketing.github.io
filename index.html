@@ -3,12 +3,79 @@
 <head>
     <title>Propuesta de Marketing Personalizada</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        #logo-container { margin-bottom: 20px; }
-        #logo { max-width: 200px; height: auto; }
-        #video-player { max-width: 600px; width: 100%; height: auto; }
-        .mensaje { font-size: 1.2em; color: #333; }
-    </style>
+    /* 1. ESTILOS BASE Y CUERPO (BODY) */
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 10px; /* Reducimos el padding general para móviles */
+        background-color: #f0f0f0;
+        margin: 0; /* Asegura que no haya márgenes externos */
+        box-sizing: border-box; /* Asegura que padding y borde no aumenten el tamaño total */
+    }
+    
+    /* 2. ESTILOS DEL MENSAJE */
+    .mensaje {
+        font-size: 1em; /* Ajustamos el tamaño de fuente */
+        color: #333;
+        margin-bottom: 15px;
+        padding: 0 10px; /* Pequeño padding horizontal para evitar que el texto toque los bordes */
+    }
+
+    .mensaje h1 {
+        font-size: 1.5em; /* Títulos más pequeños para móviles */
+        margin-top: 10px;
+    }
+
+    /* 3. CONTENEDOR DE VIDEO Y ADAPTABILIDAD */
+    #video-wrapper {
+        position: relative;
+        /* El max-width mantiene el límite en pantallas grandes, pero usamos width: 100% para ocupar toda la pantalla */
+        max-width: 600px; 
+        width: 95%; /* Ocupa el 95% del ancho de la pantalla (deja un pequeño margen a los lados) */
+        margin: 0 auto;
+        background-color: black;
+    }
+
+    #video-player {
+        width: 100%; /* El video siempre ocupa el 100% del contenedor */
+        height: auto;
+        display: block;
+    }
+
+    /* 4. ESTILOS DEL LOGO SUPERPUESTO (Responsive) */
+    #logo-overlay {
+        position: absolute;
+        top: 5px;   /* Reducimos el margen superior */
+        left: 5px;  /* Reducimos el margen izquierdo */
+        z-index: 10;
+        background-color: rgba(255, 255, 255, 0.7);
+        padding: 3px; /* Reducimos el padding */
+        border-radius: 5px;
+    }
+
+    #logo {
+        max-width: 80px; /* Reducimos el tamaño máximo del logo para móviles */
+        height: auto;
+        display: block;
+    }
+
+    /* 5. MEDIA QUERIES (Ajustes específicos para pantallas grandes/tablets) */
+    @media (min-width: 768px) {
+        /* Para pantallas con un ancho mayor a 768px (tablets y escritorio) */
+        body {
+            padding: 30px;
+        }
+        .mensaje h1 {
+            font-size: 2em; /* Restauramos un tamaño de título más grande */
+        }
+        #video-wrapper {
+            width: 80%; /* Ocupa un poco más de espacio en el centro */
+        }
+        #logo {
+            max-width: 100px; /* Volvemos al tamaño de logo original o ligeramente mayor */
+        }
+    }
+</style>
 </head>
 <body>
 
