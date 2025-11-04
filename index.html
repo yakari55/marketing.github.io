@@ -12,7 +12,7 @@
         background-color: #f0f0f0;
 
         /* SOLUCIÓN CLAVE: EL BODY OCUPA EL 100% DE LA ALTURA DE LA VENTANA */
-        min-height: 70vh; /* La altura mínima es el 100% de la altura de la ventana (viewport height) */
+        min-height: 100vh; /* La altura mínima es el 100% de la altura de la ventana (viewport height) */
         display: flex; /* Usamos flexbox para centrar fácilmente */
         flex-direction: column; /* Apilamos los elementos verticalmente */
         justify-content: center; /* Centramos el contenido verticalmente */
@@ -42,7 +42,7 @@
     #video-wrapper {
         position: relative;
         /* Limite del ancho, el 90% para dejar margenes */
-        width: 70vw; 
+        width: 90vw; 
         max-width: 600px; /* Máximo 600px en pantallas grandes */
         margin: 1vh auto; /* Margen vertical pequeño */
         background-color: black;
@@ -50,8 +50,8 @@
     }
 
     #video-player {
-        width: 70%; 
-        height: 70%; 
+        width: 100%; 
+        height: 100%; 
         display: block;
         object-fit: cover; 
     }
@@ -68,8 +68,8 @@
     }
 
     #logo {
-        max-width: 30vw; /* El logo ocupa máximo el 10% del ancho de la ventana */
-        max-height: 8vh; /* Máximo 8% del alto de la ventana */
+        max-width: 80vw; /* El logo ocupa máximo el 10% del ancho de la ventana */
+        max-height: 80vh; /* Máximo 8% del alto de la ventana */
         height: auto;
         display: block;
     }
