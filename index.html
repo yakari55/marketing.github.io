@@ -137,7 +137,10 @@
             const rutaLogos = './cliente/'; // Ejemplo: /logos/
             const rutaVideos = './video/'; // Ejemplo: /videos/
 
-            const modeloCapitalizado = modeloID.charAt(0).toUpperCase() + modeloID.slice(1).toLowerCase();
+            const modeloEnMinuscula = modeloID.toLowerCase();
+            const modeloCapitalizado = modeloEnMinuscula.charAt(0).toUpperCase() + modeloEnMinuscula.slice(1);
+
+            const nombreArchivoVideo = modeloID.toUpperCase();
 
             // URL COMPLETA DEL LOGO (Ej: /logos/CL-001.png)
             const urlLogo = rutaLogos + distribuidorID + '.png'; 
@@ -148,7 +151,7 @@
             // 3. MOSTRAR EL CONTENIDO EN LA PÁGINA
             document.getElementById('logo').src = urlLogo;
             document.getElementById('video-player').src = urlVideo;
-            document.getElementById('modelo-nombre').textContent = modeloID;
+            document.getElementById('modelo-nombre').textContent = modeloCapitalizado;
 
         } else {
             // Manejar errores si no se encuentran los parámetros
