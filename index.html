@@ -40,17 +40,26 @@
     }
 
     .modelo-frase {
-    font-size: 4.5vw; /* Tamaño más grande y proporcional al móvil */
+    font-size: 5vw; /* Tamaño más grande y proporcional al móvil */
     font-weight: 700; /* Usamos un peso de fuente más grueso que 'bold' */
     margin: 1.5vh auto; /* Margen para centrar verticalmente */
     color: #333333; /* Texto casi negro (más profesional que el negro puro) */
-    padding: 1vh 2vw;
+    padding: 1.5vh 2vw;
     background-color: #FFFFFF; /* Pequeño fondo para el texto */
     border-radius: 8px;
     display: inline-block; /* Permite aplicar fondo y padding */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para darle profundidad */
     text-transform: uppercase; /* Pone toda la frase en MAYÚSCULAS (más impacto visual) */
     letter-spacing: 1px; /* Espaciado entre letras para un look premium */
+    line-height: 1.2; /* Ajustamos la altura de línea */
+    }
+
+    .modelo-principal {
+    display: block; /* Asegura que ocupe todo el ancho después del salto de línea */
+    font-size: 7.5vw; /* Tamaño muy grande para el nombre del modelo */
+    color: #ff5722; /* Puedes usar un color de marca para destacarlo (ej: Rojo/Naranja) */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Sombra suave para que se lea mejor */
+    font-weight: 900; /* Peso extra bold */
     }
 
     /* 3. CONTENEDOR DE VIDEO Y ADAPTABILIDAD */
@@ -117,10 +126,15 @@
         }
 
         .modelo-frase {
-        font-size: 24px; /* Aumenta el tamaño de la frase completa a un valor fijo de 26px */
+        font-size: 26px; /* Aumenta el tamaño de la frase completa a un valor fijo de 26px */
         padding: 10px 20px;
         letter-spacing: 2px;
         text-transform: capitalize;
+        }
+
+        .modelo-principal {
+        font-size: 60px; /* Tamaño fijo, muy grande para escritorio */
+        margin-top: 5px; /* Espacio extra sobre el nombre del modelo */
         }
         
         .mensaje p {
@@ -157,7 +171,10 @@ body {
     </div>
 
     <div class="mensaje">
-        <h2 class="modelo-frase">Estás viendo el modelo <span id="modelo-nombre"></span></p></h2>
+        <h2 class="modelo-frase">
+        Estás viendo el modelo:
+        <br> <span class="modelo-principal" id="modelo-nombre"></span>
+    </h3>
     </div>
 
     <video id="video-player" controls autoplay muted playsinline loop>
