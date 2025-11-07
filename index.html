@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketing de Producto</title>
+    <title>Marketing de Producto (Full Video Mode)</title>
     <style>
         /* ---------------------------------------------------- */
         /* 1. ESTILOS BASE Y CUERPO (BODY) */
@@ -26,19 +26,36 @@
             align-items: center;
             padding: 10px;
             animation: fadeIn 1.5s ease-out 0.5s forwards;
-            opacity: 0; /* Inicia invisible */
-            overflow-x: hidden; /* Evita scroll horizontal por el zoom */
+            opacity: 0;
+            overflow-x: hidden;
+            overflow-y: auto; 
         }
-        
-        /* Oculta otros elementos cuando el video está en zoom */
-        body.zoom-active > *:not(#video-wrapper):not(#logo-overlay) { 
+
+        /* ESTADO INICIAL DE ZOOM: Oculta elementos no necesarios */
+        body.zoom-active > *:not(#video-wrapper) { 
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
         }
 
+        /* ESTADO FINAL: Oculta mensajes, mantiene solo el video wrapper */
+        body.modo-video-final {
+            display: block; 
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            background-color: black;
+        }
+        
+        /* Regla de Ocultación: Ocultar MENSAJES de texto, pero NO el video wrapper */
+        body.modo-video-final .mensaje,
+        body.modo-video-final #mensaje-final-wrapper {
+            display: none !important;
+        }
+
+
         /* ---------------------------------------------------- */
-        /* 2. ESTILOS DE TÍTULOS Y TEXTO */
+        /* 2. ESTILOS DE TÍTULOS Y TEXTO (Solo visibles al inicio) */
         /* ---------------------------------------------------- */
         .mensaje {
             color: #333;
@@ -46,37 +63,9 @@
             padding: 0 1vw;
             max-width: 600px;
         }
+        /* ... (restantes estilos de .mensaje y .modelo-frase) ... */
 
-        .mensaje h1 {
-            font-size: 5vw;
-            margin-top: 1vh;
-            margin-bottom: 0.5vh;
-        }
-
-        .modelo-frase {
-            color: #333333;
-            font-size: 5vw;
-            font-weight: 700;
-            padding: 1.5vh 2vw;
-            background-color: #FFFFFF;
-            border-radius: 8px;
-            display: inline-block;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 1.5vh auto;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            line-height: 1.2;
-        }
-
-        .modelo-principal {
-            display: block;
-            font-size: 7.5vw;
-            color: #444444; /* Gris Oscuro: Look Lujoso */
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-            font-weight: 900;
-        }
-
-
+        
         /* ---------------------------------------------------- */
         /* 3. CONTENEDOR DE VIDEO Y EFECTOS */
         /* ---------------------------------------------------- */
@@ -90,373 +79,15 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
             border-radius: 12px;
             overflow: hidden;
-            transition: all 0.7s ease-out; /* Para el efecto zoom */
+            transition: all 0.7s ease-out; 
             z-index: 1;
         }
         
-        /* CLASE PARA AGRANDAR EL VIDEO TEMPORALMENTE */
+        /* CLASE 1: EFECTO ZOOM INICIAL */
         #video-wrapper.video-zoom {
             width: 100vw !important;
             height: 100vh !important;
             max-width: none !important;
             max-height: none !important;
             border-radius: 0 !important;
-            box-shadow: none !important;
-            margin: 0 !important;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 9999;
-        }
-
-
-        #video-player {
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: cover;
-        }
-        
-        /* ESTILOS DEL LOGO SUPERPUESTO */
-        #logo-overlay {
-            position: absolute;
-            top: 1.5vh;
-            left: 1.5vh;
-            z-index: 10;
-            background-color: rgba(255, 255, 255, 0.85); /* Menos transparente */
-            padding: 1.5vw; /* Más padding */
-            border-radius: 8px; /* Más redondeado */
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-            
-            /* Alineación para logo y texto */
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5vh;
-        }
-
-        #logo {
-            max-width: 15vw; /* Logo más grande */
-            max-height: 12vh;
-            height: auto;
-            display: block;
-        }
-
-        /* Nombre del Producto dentro del video */
-        .nombre-producto-video {
-            color: #333;
-            font-size: 2.5vw; 
-            font-weight: bold;
-            text-transform: capitalize;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 0.3vh 0.8vw;
-            border-radius: 4px;
-            line-height: 1;
-        }
-        
-        /* Ajusta el logo para que siga siendo visible en modo zoom */
-        .video-zoom #logo-overlay {
-            top: 20px !important;
-            left: 20px !important;
-            z-index: 10000 !important;
-            background-color: rgba(255, 255, 255, 0.95);
-        }
-        .video-zoom .nombre-producto-video {
-            font-size: 30px !important;
-        }
-        .video-zoom #logo {
-            max-width: 180px !important;
-        }
-
-
-        /* ---------------------------------------------------- */
-        /* 4. ESTILOS DEL MENÚ DE COLORES */
-        /* ---------------------------------------------------- */
-        .selector-titulo {
-            font-size: 1.1em;
-            color: #555;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .botones-colores-container {
-            margin: 10px auto 25px auto;
-            max-width: 600px;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .boton-color {
-            padding: 8px 15px;
-            border: 2px solid #ccc;
-            background-color: #f8f8f8;
-            color: #444;
-            cursor: pointer;
-            border-radius: 20px;
-            font-size: 0.9em;
-            transition: all 0.2s ease;
-            text-transform: capitalize;
-        }
-
-        .boton-color:hover {
-            border-color: #555;
-            background-color: #e0e0e0;
-        }
-
-        .boton-color.activo {
-            border-color: #C0392B; /* Color de marca activo */
-            background-color: #C0392B;
-            color: #FFFFFF;
-            font-weight: bold;
-            transform: scale(1.05);
-        }
-
-        /* ---------------------------------------------------- */
-        /* 5. ESTILOS PARA EL MENSAJE FINAL */
-        /* ---------------------------------------------------- */
-        #mensaje-final-wrapper {
-            max-width: 600px;
-            width: 95%;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            border-top: 3px solid #C0392B;
-            text-align: center;
-        }
-
-        #mensaje-final-wrapper h2 {
-            font-size: 1.6em;
-            color: #C0392B;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-
-        #mensaje-final-wrapper p {
-            font-size: 1.1em;
-            line-height: 1.5;
-            color: #555;
-        }
-
-        .contacto-info {
-            font-size: 0.9em;
-            color: #888;
-            margin-top: 20px;
-        }
-
-        /* ---------------------------------------------------- */
-        /* 6. MEDIA QUERIES (Ajustes para pantallas grandes/laptops) */
-        /* ---------------------------------------------------- */
-        @media (min-width: 768px) {
-            body {
-                padding: 30px;
-            }
-            .mensaje h1 {
-                font-size: 32px;
-            }
-            .modelo-frase {
-                font-size: 26px;
-                padding: 10px 20px;
-                letter-spacing: 2px;
-            }
-            .modelo-principal {
-                font-size: 60px;
-                margin-top: 5px;
-            }
-            #video-wrapper {
-                width: 80%;
-                max-width: 900px;
-            }
-            #logo {
-                max-width: 150px;
-            }
-            .nombre-producto-video {
-                font-size: 20px; 
-                padding: 4px 8px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="mensaje">
-        <h1>¡Marketing!</h1>
-        
-        <h3 class="modelo-frase">
-            Estás viendo el modelo:
-            <br>
-            <span class="modelo-principal" id="modelo-nombre"></span>
-        </h3>
-    </div>
-
-    <div id="video-wrapper">
-        <video id="video-player" controls autoplay muted playsinline loop>
-            Tu navegador no soporta el video.
-        </video>
-        <div id="logo-overlay">
-            <img id="logo" src="" alt="Logo del Distribuidor">
-            <span id="producto-nombre-video" class="nombre-producto-video"></span> 
-        </div>
-    </div>
-    
-    <div id="colores-disponibles-wrapper">
-        <p class="selector-titulo">Ver otros colores disponibles:</p>
-        </div>
-
-
-    <div id="mensaje-final-wrapper">
-        <h2>🔥 ¡El siguiente paso es la DEMO en tu tienda!</h2>
-        <p><strong>[Tu Marca]</strong> tiene stock limitado de la serie **<span id="modelo-nombre-final"></span>**. Contacta a tu gerente de cuenta hoy mismo para asegurar tu pedido y programar una exhibición exclusiva.</p>
-        <div class="linea-divisoria"></div>
-        <p class="contacto-info">Teléfono: (555) 123-4567 | Email: info@tumerca.com</p>
-    </div>
-
-<script>
-const CATALOGO_COLORES = {
-    // ⚠️ RELLENA CON TUS DATOS REALES (El nombre del modelo BASE, en MAYÚSCULAS)
-    "CARRARA_25X40": ["BLANCO", "BLANCO_NUBE", "AZUL"], 
-    "BARCELONA_25X40": ["GRIS"], 
-    "CORAL_25X40": ["GRIS"],
-    "YURUBI_25X40": ["ROSA","AZUL"]
-};
-
-// **IMPORTANTE: AJUSTAR ESTAS RUTAS DE ARCHIVOS**
-const rutaLogos = './cliente/'; 
-const rutaVideos = './video/'; 
-
-// Función principal para actualizar el video y el logo
-function actualizarContenido(modelo, color, distribuidorID) {
-    // Genera el nombre del archivo completo: 'CARRARA_25X40_BLANCO'
-    const nombreCompletoArchivo = `${modelo}_${color}`;
-    
-    // Genera el nombre visual: 'Carrara 25x40 Blanco'
-    let nombreVisual = nombreCompletoArchivo.replace(/_/g, ' '); 
-    nombreVisual = nombreVisual.toLowerCase(); 
-    nombreVisual = nombreVisual.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); 
-
-    // Lógica para las RUTAS
-    const nombreArchivoVideo = nombreCompletoArchivo.toUpperCase(); // Video: CARRARA_25X40_BLANCO
-    
-    // Forzar el distribuidorID a minúsculas
-    const distribuidorLower = distribuidorID.toLowerCase(); 
-
-    // Rutas
-    const urlLogo = rutaLogos + distribuidorLower + '.png'; // Logo: .../cliente/ferrehierro.png
-    const urlVideo = rutaVideos.toLowerCase() + nombreArchivoVideo + '.mp4'; 
-    
-    // Asignación a la Página
-    document.getElementById('logo').src = urlLogo;
-    document.getElementById('video-player').src = urlVideo;
-    
-    // Actualiza IDs de texto
-    const nombreModeloElement = document.getElementById('modelo-nombre');
-    if (nombreModeloElement) nombreModeloElement.textContent = nombreVisual; 
-
-    const nombreModeloFinalElement = document.getElementById('modelo-nombre-final');
-    if (nombreModeloFinalElement) nombreModeloFinalElement.textContent = nombreVisual; 
-    
-    const productoNombreVideoElement = document.getElementById('producto-nombre-video');
-    if (productoNombreVideoElement) productoNombreVideoElement.textContent = nombreVisual; 
-}
-
-
-// Función para generar los botones del menú de colores
-function generarBotones(modeloBase, distribuidorID, colorInicial) {
-    const colores = CATALOGO_COLORES[modeloBase];
-    const wrapper = document.getElementById('colores-disponibles-wrapper');
-
-    if (!colores || colores.length <= 1) {
-        wrapper.style.display = 'none';
-        return;
-    }
-
-    const botonesContainer = document.createElement('div');
-    botonesContainer.className = 'botones-colores-container';
-
-    colores.forEach(color => {
-        const boton = document.createElement('button');
-        boton.textContent = color;
-        boton.className = 'boton-color';
-        
-        if (color === colorInicial) {
-            boton.classList.add('activo');
-        }
-
-        boton.onclick = () => {
-            document.querySelectorAll('.boton-color').forEach(btn => btn.classList.remove('activo'));
-            boton.classList.add('activo');
-            actualizarContenido(modeloBase, color, distribuidorID);
-        };
-        botonesContainer.appendChild(boton);
-    });
-
-    wrapper.appendChild(botonesContainer);
-}
-
-
-// ------------------------------------------------------------------
-// INICIO DEL SCRIPT AL CARGAR LA PÁGINA
-// ------------------------------------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    const modeloIDBruto = urlParams.get('modelo'); // Ej: YURUBI_25X40_AZUL
-    const distribuidorID = urlParams.get('distribuidor');
-
-    if (distribuidorID && modeloIDBruto) {
-        let modeloBase;
-        let colorURL; 
-        const modeloBrutoUpper = modeloIDBruto.toUpperCase();
-        
-        // Detección del Modelo Base y Color de la URL
-        const partes = modeloBrutoUpper.split('_');
-        
-        colorURL = partes[partes.length - 1]; // El último elemento es el color escaneado
-        modeloBase = partes.slice(0, partes.length - 1).join('_'); // El resto es el modelo base
-
-        if (!CATALOGO_COLORES[modeloBase]) {
-             document.body.innerHTML = '<h1>Error: Modelo base no encontrado en el catálogo.</h1>';
-             return;
-        }
-
-        let colorID; 
-        const coloresDisponibles = CATALOGO_COLORES[modeloBase];
-        
-        // Si el color escaneado existe en la lista de colores, lo usamos. Si no, usamos el primero.
-        if (coloresDisponibles.includes(colorURL)) {
-            colorID = colorURL;
-        } else {
-            colorID = coloresDisponibles[0]; 
-        }
-
-        // Inicializar el contenido
-        actualizarContenido(modeloBase, colorID, distribuidorID);
-
-        // Generar el menú de botones
-        generarBotones(modeloBase, colorID, distribuidorID);
-
-        // LÓGICA DEL EFECTO ZOOM
-        const videoWrapper = document.getElementById('video-wrapper');
-        const body = document.body;
-
-        body.classList.add('zoom-active'); 
-        videoWrapper.classList.add('video-zoom'); 
-
-        // Después de 4 segundos, quita el efecto de zoom
-        setTimeout(() => {
-            videoWrapper.classList.remove('video-zoom');
-            body.classList.remove('zoom-active');
-        }, 4000); 
-
-    } else {
-        document.body.innerHTML = '<h1>Error: Código de producto o distribuidor no encontrado.</h1>';
-    }
-});
-</script> 
-</body>
-</html>
+            box-shadow:
