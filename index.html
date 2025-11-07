@@ -1,210 +1,221 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketing de Producto (Full Video Mode)</title>
-    <style>
-        /* ---------------------------------------------------- */
-        /* 1. ESTILOS BASE Y CUERPO (BODY) */
-        /* ---------------------------------------------------- */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Marketing de Producto (Full Video Mode)</title>
+    <style>
+        /* ---------------------------------------------------- */
+        /* 1. ESTILOS BASE Y CUERPO (BODY) */
+        /* ---------------------------------------------------- */
+        :root {
+            /* Define una variable CSS que incluye el área segura inferior del móvil */
+            --safe-bottom: env(safe-area-inset-bottom, 20px); 
+            /* Se usa 20px como fallback si la propiedad no es compatible */
+            --menu-height-fixed: 120px; 
+            /* Altura base de separación para el menú */
+        }
 
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            box-sizing: border-box;
-            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-            animation: fadeIn 1.5s ease-out 0.5s forwards;
-            opacity: 0;
-            overflow-x: hidden;
-            overflow-y: auto; 
-        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        body.zoom-active > *:not(#video-wrapper) { 
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            animation: fadeIn 1.5s ease-out 0.5s forwards;
+            opacity: 0;
+            overflow-x: hidden;
+            overflow-y: auto; 
+        }
 
-        body.modo-video-final {
-            display: block; 
-            padding: 0;
-            margin: 0;
-            min-height: 100vh;
-            /* ✅ CLAVE: Aseguramos el fondo negro en el modo final */
-            background-color: black;
-            overflow: hidden; 
-        }
-        
-        body.modo-video-final .mensaje,
-        body.modo-video-final #mensaje-final-wrapper {
-            display: none !important;
-        }
-
-
-        /* ---------------------------------------------------- */
-        /* 3. CONTENEDOR DE VIDEO Y EFECTOS */
-        /* ---------------------------------------------------- */
-        #video-wrapper {
-            position: relative;
-            width: 90vw;
-            max-width: 600px;
-            margin: 1vh auto;
-            background-color: black;
-            aspect-ratio: 16 / 9;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.7s ease-out; 
-            z-index: 1;
-        }
-        
-        #video-wrapper.video-zoom {
-            /* ... (Mantiene estilos de zoom) ... */
-        }
-        
-        /* 🛑 CLAVE: Restamos 130px para forzar el espacio en móvil y escritorio */
-        #video-wrapper.pantalla-completa-final {
-            position: fixed; 
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: calc(100vh - 130px); 
-            max-width: none;
-            max-height: none;
-            margin: 0;
-            box-shadow: none;
-            border-radius: 0;
-            z-index: 1;
-        }
-
-        #video-player {
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: cover;
-        }
-        
-        /* ESTILOS DEL LOGO Y NOMBRE DE PRODUCTO SUPERPUESTO */
-        /* ... (Estilos de overlay) ... */
-
-        #logo { max-width: 15vw; max-height: 12vh; height: auto; display: block; }
-        
-        .nombre-producto-video { 
-            color: #333; 
-            /* ✅ Nuevo tamaño para mejor visibilidad en móvil */
-            font-size: 2.5vw;  
-            font-weight: bold; 
-            text-transform: capitalize; 
-            margin-top: 0.5vh; 
-            line-height: 1.2; 
-        }
-        
-        /* ... (Estilos de zoom del logo) ... */
+        body.modo-video-final {
+            display: block; 
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            /* Aseguramos el fondo negro para eliminar el doble fondo gris/blanco */
+            background-color: black; 
+            overflow: hidden; 
+        }
+        
+        body.modo-video-final .mensaje,
+        body.modo-video-final #mensaje-final-wrapper {
+            display: none !important;
+        }
 
 
-        /* ---------------------------------------------------- */
-        /* 4. ESTILOS DEL MENÚ DE COLORES (Fijo en la parte inferior) */
-        /* ---------------------------------------------------- */
-        #colores-disponibles-wrapper {
-            position: fixed; 
-            bottom: 0; 
-            left: 0;
-            width: 100%;
-            z-index: 50; 
-            height: auto; 
-            
-            /* ✅ CLAVE: Padding grande para subir los botones */
-            padding: 5px 0 30px 0; 
-            
-            /* ✅ Eliminamos fondo de inicio para evitar el doble fondo */
-            background-color: transparent; 
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease;
-        }
-        
-        /* Mostrar el menú solo en el estado final (¡Aquí establecemos el fondo!) */
-        body.modo-video-final #colores-disponibles-wrapper {
-            opacity: 1;
-            /* ✅ Fondo unificado y más sutil */
-            background-color: rgba(0, 0, 0, 0.4); 
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-            visibility: visible;
-        }
+        /* ---------------------------------------------------- */
+        /* 3. CONTENEDOR DE VIDEO Y EFECTOS */
+        /* ---------------------------------------------------- */
+        #video-wrapper {
+            /* ... (Mantiene estilos iniciales) ... */
+            background-color: black;
+            transition: all 0.7s ease-out; 
+            z-index: 1;
+        }
+        
+        /* 🛑 CLAVE: Restamos la altura fija del menú (120px) más el área segura inferior del móvil */
+        #video-wrapper.pantalla-completa-final {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100vw;
+            /* Altura: 100vh - Altura Fija del Menú - Espacio de Navegación */
+            height: calc(100vh - var(--menu-height-fixed) - var(--safe-bottom)); 
+            max-width: none;
+            max-height: none;
+            margin: 0;
+            box-shadow: none;
+            border-radius: 0;
+            z-index: 1;
+        }
 
-        .selector-titulo { 
-            color: #FFFFFF; 
-            margin: 0 0 5px 0; 
-            font-size: 0.8em; 
-            text-shadow: 0 0 5px rgba(0,0,0,0.7); 
-        }
-        /* ... (Estilos de botones) ... */
+        #video-player {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+        }
+        
+        /* ESTILOS DEL LOGO Y NOMBRE DE PRODUCTO SUPERPUESTO */
+        #logo-overlay {
+            position: absolute;
+            top: 1.5vh;
+            left: 1.5vh;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.4); 
+            padding: 1vw 1.5vw; 
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5vh;
+        }
 
-        /* ---------------------------------------------------- */
-        /* 5. MEDIA QUERIES */
-        /* ---------------------------------------------------- */
-        @media (min-width: 768px) {
-            #video-wrapper.pantalla-completa-final {
-                /* ✅ Corregido a 130px para coincidir con la versión móvil */
-                height: calc(100vh - 130px); 
-            }
-        }
-        
-    </style>
+        #logo { max-width: 15vw; max-height: 12vh; height: auto; display: block; }
+        
+        .nombre-producto-video { 
+            color: #333; 
+            font-size: 2.5vw; /* Aumentado para mejor visibilidad en móvil */
+            font-weight: bold; 
+            text-transform: capitalize; 
+            margin-top: 0.5vh; 
+            line-height: 1.2; 
+        }
+        
+        /* ... (Estilos de logo en zoom) ... */
+
+
+        /* ---------------------------------------------------- */
+        /* 4. ESTILOS DEL MENÚ DE COLORES (Fijo en la parte inferior) */
+        /* ---------------------------------------------------- */
+        #colores-disponibles-wrapper {
+            position: fixed; 
+            bottom: 0; 
+            left: 0;
+            width: 100%;
+            z-index: 50; 
+            height: auto; 
+            
+            /* ✅ CLAVE: Usamos el área segura para el padding inferior */
+            padding: 5px 0 calc(25px + var(--safe-bottom)) 0; 
+            
+            /* Eliminamos el fondo en el estado inicial */
+            background-color: transparent; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+        }
+        
+        /* Mostrar el menú solo en el estado final (¡Fondo del menú aquí!) */
+        body.modo-video-final #colores-disponibles-wrapper {
+            opacity: 1;
+            /* ✅ Fondo del menú unificado y más sutil, similar al logo */
+            background-color: rgba(0, 0, 0, 0.4); 
+            box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.2); /* Sombra superior */
+            visibility: visible;
+        }
+
+        .selector-titulo { 
+            color: #FFFFFF; 
+            margin: 0 0 5px 0; 
+            font-size: 0.8em; 
+            text-shadow: 0 0 5px rgba(0,0,0,0.7); 
+        }
+        
+        /* ... (Estilos de botones, que se mantienen bien) ... */
+
+
+        /* ---------------------------------------------------- */
+        /* 5. MEDIA QUERIES */
+        /* ---------------------------------------------------- */
+        @media (min-width: 768px) {
+            #video-wrapper.pantalla-completa-final {
+                /* Altura normal en escritorio, sin safe-area */
+                height: calc(100vh - var(--menu-height-fixed)); 
+            }
+            #colores-disponibles-wrapper {
+                /* Padding normal en escritorio */
+                padding: 5px 0 25px 0; 
+            }
+        }
+        
+    </style>
 </head>
 
 <body>
 
-        <div class="mensaje">
-        <h1>¡Marketing!</h1>
-        
-        <h3 class="modelo-frase">
-            Estás viendo el modelo:
-            <br>
-            <span class="modelo-principal" id="modelo-nombre"></span>
-        </h3>
-    </div>
+    <div class="mensaje">
+        <h1>¡Marketing!</h1>
+        
+        <h3 class="modelo-frase">
+            Estás viendo el modelo:
+            <br>
+            <span class="modelo-principal" id="modelo-nombre"></span>
+        </h3>
+    </div>
 
-    <div id="video-wrapper">
-        <video id="video-player" controls autoplay muted playsinline loop>
-            Tu navegador no soporta el video.
-        </video>
-        <div id="logo-overlay">
-            <img id="logo" src="" alt="Logo del Distribuidor">
-            <h4 id="producto-nombre-video" class="nombre-producto-video"></h4> 
-        </div>
-    </div>
-    
-    <div id="colores-disponibles-wrapper">
-        <p class="selector-titulo">Ver otros colores disponibles:</p>
-        <div class="botones-colores-container"></div>
-    </div>
-    
-    <div id="mensaje-final-wrapper">
-        <h2>🔥 ¡El siguiente paso es la DEMO en tu tienda!</h2>
-        <p><strong>[Tu Marca]</strong> tiene stock limitado de la serie **<span id="modelo-nombre-final"></span>**. Contacta a tu gerente de cuenta hoy mismo para asegurar tu pedido y programar una exhibición exclusiva.</p>
-        <div class="linea-divisoria"></div>
-        <p class="contacto-info">Teléfono: (555) 123-4567 | Email: info@tumerca.com</p>
-    </div>
+    <div id="video-wrapper">
+        <video id="video-player" controls autoplay muted playsinline loop>
+            Tu navegador no soporta el video.
+        </video>
+        <div id="logo-overlay">
+            <img id="logo" src="" alt="Logo del Distribuidor">
+            <h4 id="producto-nombre-video" class="nombre-producto-video"></h4> 
+        </div>
+    </div>
+    
+    <div id="colores-disponibles-wrapper">
+        <p class="selector-titulo">Ver otros colores disponibles:</p>
+        <div class="botones-colores-container"></div>
+    </div>
+    
+    <div id="mensaje-final-wrapper">
+        <h2>🔥 ¡El siguiente paso es la DEMO en tu tienda!</h2>
+        <p><strong>[Tu Marca]</strong> tiene stock limitado de la serie **<span id="modelo-nombre-final"></span>**. Contacta a tu gerente de cuenta hoy mismo para asegurar tu pedido y programar una exhibición exclusiva.</p>
+        <div class="linea-divisoria"></div>
+        <p class="contacto-info">Teléfono: (555) 123-4567 | Email: info@tumerca.com</p>
+    </div>
 
 <script>
+// El JavaScript se mantiene intacto, ya que la lógica es correcta.
 const CATALOGO_COLORES = {
     "CARRARA_25X40": ["BLANCO", "BLANCO_NUBE", "AZUL"], 
     "BARCELONA_25X40": ["GRIS"], 
