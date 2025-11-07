@@ -93,14 +93,14 @@
             z-index: 9999;
         }
         
-        /* ✅ CORRECCIÓN DE ALTURA FINAL: Aumentamos la resta para dejar más espacio al menú */
+        /* 🛑 CAMBIO CRÍTICO: Restamos 120px para dejar más espacio al menú */
         #video-wrapper.pantalla-completa-final {
             position: fixed; 
             top: 0;
             left: 0;
             width: 100vw;
-            /* 🛑 CLAVE: Resta de 90px para asegurar espacio para el menú más alto */
-            height: calc(100vh - 90px); 
+            /* ✅ CLAVE: Nueva resta de 120px */
+            height: calc(100vh - 120px); 
             max-width: none;
             max-height: none;
             margin: 0;
@@ -122,9 +122,8 @@
             top: 1.5vh;
             left: 1.5vh;
             z-index: 10;
-            /* ✅ Nuevo: Fondo del logo más transparente (0.4) */
             background-color: rgba(255, 255, 255, 0.4); 
-            padding: 1vw 1.5vw; /* Relleno compacto */
+            padding: 1vw 1.5vw; 
             border-radius: 8px;
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
             display: flex;
@@ -135,13 +134,12 @@
 
         #logo { max-width: 15vw; max-height: 12vh; height: auto; display: block; }
         
-        /* ✅ Estilos para el nombre del producto (ahora un h4) */
         .nombre-producto-video { 
             color: #333; 
-            font-size: 2vw; /* Tamaño de fuente más pequeño para móviles */
+            font-size: 2vw; 
             font-weight: bold; 
             text-transform: capitalize; 
-            margin-top: 0.5vh; /* Espacio entre logo y texto */
+            margin-top: 0.5vh; 
             line-height: 1.2; 
         }
         
@@ -151,10 +149,10 @@
             top: 20px !important; 
             left: 20px !important; 
             z-index: 10000 !important; 
-            background-color: rgba(255, 255, 255, 0.6); /* Un poco más de solidez en modo pantalla completa */
-            padding: 15px 20px; /* Ajuste de padding para pantalla completa */
+            background-color: rgba(255, 255, 255, 0.6); 
+            padding: 15px 20px; 
         }
-        .video-zoom .nombre-producto-video, .pantalla-completa-final .nombre-producto-video { font-size: 24px !important; } /* Tamaño fijo en pantalla completa */
+        .video-zoom .nombre-producto-video, .pantalla-completa-final .nombre-producto-video { font-size: 24px !important; } 
         .video-zoom #logo, .pantalla-completa-final #logo { max-width: 180px !important; }
 
 
@@ -167,17 +165,17 @@
             left: 0;
             width: 100%;
             z-index: 50; 
-            height: auto; /* Se ajusta al contenido */
+            /* Quitamos height para autoajuste */
+            height: auto; 
             
-            /* ✅ Nuevo: Padding vertical para centrar el contenido y subirlo un poco más */
-            padding: 8px 0 15px 0; 
+            /* 🛑 CLAVE: Aumentamos el padding inferior para empujar los botones hacia arriba */
+            padding: 8px 0 30px 0; 
             
-            /* ✅ Fondo del banner del menú aún más transparente */
-            background-color: rgba(0, 0, 0, 0.2); /* Muy sutil */
+            background-color: rgba(0, 0, 0, 0.2); 
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Centrar verticalmente el contenido */
+            justify-content: center; 
             align-items: center;
             opacity: 0;
             visibility: hidden;
@@ -194,26 +192,24 @@
             color: #FFFFFF; 
             margin: 0 0 5px 0; 
             font-size: 0.8em; 
-            text-shadow: 0 0 5px rgba(0,0,0,0.7); /* Sombra para mejor lectura en fondos claros */
+            text-shadow: 0 0 5px rgba(0,0,0,0.7); 
         }
         .botones-colores-container { margin: 0; max-width: 600px; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
         
-        /* ✅ Fondo de los botones similar al logo y texto oscuro para contraste */
         .boton-color { 
             padding: 6px 12px; 
-            border: 2px solid rgba(255, 255, 255, 0.7); /* Borde blanco semi-transparente */
-            background-color: rgba(255, 255, 255, 0.6); /* ✅ Fondo blanco semi-transparente similar al logo */
-            color: #333; /* ✅ Texto oscuro para mejor contraste */
+            border: 2px solid rgba(255, 255, 255, 0.7); 
+            background-color: rgba(255, 255, 255, 0.6); 
+            color: #333; 
             cursor: pointer; 
             border-radius: 20px; 
             font-size: 0.85em; 
             transition: all 0.2s ease; 
             text-transform: capitalize; 
             line-height: 1; 
-            text-shadow: none; /* Quitamos sombra si el fondo del botón es más claro */
+            text-shadow: none; 
         }
-        /* Estilos para el botón activo y hover */
-        .boton-color:hover { border-color: #C0392B; background-color: rgba(192, 57, 43, 0.7); color: #FFFFFF; } /* Fondo sutil al pasar el ratón */
+        .boton-color:hover { border-color: #C0392B; background-color: rgba(192, 57, 43, 0.7); color: #FFFFFF; } 
         .boton-color.activo { border-color: #C0392B; background-color: #C0392B; color: #FFFFFF; font-weight: bold; transform: scale(1.05); }
 
         /* ---------------------------------------------------- */
@@ -221,7 +217,7 @@
         /* ---------------------------------------------------- */
         @media (min-width: 768px) {
             #video-wrapper.pantalla-completa-final {
-                height: calc(100vh - 90px);
+                height: calc(100vh - 120px);
             }
         }
         
@@ -312,13 +308,10 @@ function actualizarContenido(modelo, color, distribuidorID) {
     const urlVideo = rutaVideos.toLowerCase() + nombreArchivoVideo + '.mp4'; 
     
     document.getElementById('logo').src = urlLogo;
-    
     document.getElementById('video-player').src = urlVideo;
     
     document.getElementById('modelo-nombre').textContent = nombreVisual; 
     document.getElementById('modelo-nombre-final').textContent = nombreVisual; 
-    
-    // ✅ Re-implementado: Actualizar el nombre del producto debajo del logo
     document.getElementById('producto-nombre-video').textContent = nombreVisual; 
 }
 
