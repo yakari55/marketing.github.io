@@ -86,7 +86,7 @@
             z-index: 1;
         }
         
-        /* CLASE 1: EFECTO ZOOM INICIAL IMPACTANTE (Ocupa la pantalla al 100% fijo) */
+        /* CLASE 1: EFECTO ZOOM INICIAL IMPACTANTE (100% fijo) */
         #video-wrapper.video-zoom {
             width: 100vw !important;
             height: 100vh !important;
@@ -101,14 +101,14 @@
             z-index: 9999;
         }
         
-        /* ✅ CORRECCIÓN CLAVE: ESTADO FINAL (Pantalla completa pero deja espacio para el menú) */
+        /* ✅ CORRECCIÓN FINAL: ESTADO FINAL DEL VIDEO EN MÓVIL (deja espacio para el menú) */
         #video-wrapper.pantalla-completa-final {
             position: fixed; 
             top: 0;
             left: 0;
             width: 100vw;
-            /* 🛑 CORRECCIÓN: Quitamos 15vh (o el espacio que necesite el menú) */
-            height: calc(100vh - 10vh); 
+            /* 🛑 CLAVE: Restar la altura del menú (aprox 12vh) para que el menú sea visible */
+            height: calc(100vh - 12vh); 
             max-width: none;
             max-height: none;
             margin: 0;
@@ -147,9 +147,9 @@
             display: block;
         }
         
-        /* ... (restantes estilos de logo/texto en zoom/final) ... */
         .nombre-producto-video { color: #333; font-size: 2.5vw; font-weight: bold; text-transform: capitalize; background-color: rgba(255, 255, 255, 0.7); padding: 0.3vh 0.8vw; border-radius: 4px; line-height: 1; }
         
+        /* Ajustes de logo/texto en zoom/final */
         #video-wrapper.video-zoom #logo-overlay, 
         #video-wrapper.pantalla-completa-final #logo-overlay {
             position: fixed !important;
@@ -163,50 +163,50 @@
 
 
         /* ---------------------------------------------------- */
-        /* 4. ESTILOS DEL MENÚ DE COLORES (Superpuesto/Fijo en la parte inferior) */
+        /* 4. ESTILOS DEL MENÚ DE COLORES (Fijo en la parte inferior) */
         /* ---------------------------------------------------- */
         #colores-disponibles-wrapper {
-            /* ✅ CORRECCIÓN CLAVE: Lo sacamos del video wrapper para posicionarlo independientemente */
             position: fixed; 
             bottom: 0; 
             left: 0;
             width: 100%;
-            z-index: 5; 
-            padding: 15px 0 20px 0; 
-            background-color: rgba(0, 0, 0, 0.8); /* Más oscuro */
+            z-index: 50; 
+            /* ✅ Altura total del menú (12vh) que se resta en el video-wrapper */
+            height: 12vh; 
+            padding: 1.5vh 0 1.5vh 0; 
+            background-color: rgba(0, 0, 0, 0.8); 
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* ✅ Nuevo: Transición para que aparezca suavemente */
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.5s ease;
         }
         
-        /* ✅ Nuevo: Mostrar el menú solo en el estado final */
+        /* Mostrar el menú solo en el estado final */
         body.modo-video-final #colores-disponibles-wrapper {
             opacity: 1;
             visibility: visible;
         }
 
-        .selector-titulo { color: #FFFFFF; margin: 0 0 10px 0; }
+        .selector-titulo { color: #FFFFFF; margin: 0 0 10px 0; font-size: 0.9em; }
         .botones-colores-container { margin: 0; max-width: 600px; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
         
-        /* ... (mantener estilos de botones) ... */
         .boton-color { padding: 8px 15px; border: 2px solid #ccc; background-color: #f8f8f8; color: #444; cursor: pointer; border-radius: 20px; font-size: 0.9em; transition: all 0.2s ease; text-transform: capitalize; }
         .boton-color:hover { border-color: #555; background-color: #e0e0e0; }
         .boton-color.activo { border-color: #C0392B; background-color: #C0392B; color: #FFFFFF; font-weight: bold; transform: scale(1.05); }
 
         /* ---------------------------------------------------- */
-        /* 5. MENSAJE FINAL (Oculto en modo video-final) */
+        /* 5. MEDIA QUERIES (Ajustes para pantallas grandes/laptops) */
         /* ---------------------------------------------------- */
-        #mensaje-final-wrapper {
-            /* ... (mantener estilos) ... */
-            max-width: 600px; width: 95%; margin: 30px auto; padding: 20px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); border-top: 3px solid #C0392B; text-align: center;
+        @media (min-width: 768px) {
+            /* Adaptamos el cálculo para que el menú de 12vh se vea bien */
+            #video-wrapper.pantalla-completa-final {
+                height: calc(100vh - 12vh);
+            }
         }
         
-        /* ... (restantes estilos de media queries) ... */
     </style>
 </head>
 
@@ -245,16 +245,48 @@
 
 <script>
 const CATALOGO_COLORES = {
-    // ⚠️ RELLENA CON TUS DATOS REALES (El nombre del modelo BASE, en MAYÚSCULAS)
     "CARRARA_25X40": ["BLANCO", "BLANCO_NUBE", "AZUL"], 
     "BARCELONA_25X40": ["GRIS"], 
     "CORAL_25X40": ["GRIS"],
     "YURUBI_25X40": ["ROSA","AZUL"]
 };
 
-// **IMPORTANTE: AJUSTAR ESTAS RUTAS DE ARCHIVOS**
 const rutaLogos = './cliente/'; 
 const rutaVideos = './video/'; 
+
+// 🛑 FUNCIÓN CLAVE: Maneja el efecto de zoom y el estado final del video
+function aplicarZoomInicial() {
+    const videoWrapper = document.getElementById('video-wrapper');
+    const body = document.body;
+    const videoPlayer = document.getElementById('video-player');
+
+    // 1. Resetear estados previos del zoom/final (para que el efecto se repita)
+    videoWrapper.classList.remove('pantalla-completa-final');
+    body.classList.remove('modo-video-final');
+    
+    // 2. Aplicar el zoom inicial
+    body.classList.add('zoom-active'); 
+    videoWrapper.classList.add('video-zoom'); 
+    
+    // Forzar la reproducción al inicio del zoom
+    videoPlayer.play();
+
+    // 3. Establecer el estado final después de 4 segundos
+    setTimeout(() => {
+        // Quitar las clases de transición de zoom
+        videoWrapper.classList.remove('video-zoom');
+        body.classList.remove('zoom-active');
+        
+        // Aplicar las clases del estado final
+        videoWrapper.classList.add('pantalla-completa-final');
+        body.classList.add('modo-video-final');
+        
+        // Asegurar la reproducción continua
+        videoPlayer.play();
+        
+    }, 4000); // Duración del zoom: 4 segundos
+}
+
 
 // Función principal para actualizar el video y el logo
 function actualizarContenido(modelo, color, distribuidorID) {
@@ -264,27 +296,18 @@ function actualizarContenido(modelo, color, distribuidorID) {
     nombreVisual = nombreVisual.toLowerCase(); 
     nombreVisual = nombreVisual.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); 
 
-    // Lógica para las RUTAS
     const nombreArchivoVideo = nombreCompletoArchivo.toUpperCase(); 
     const distribuidorLower = distribuidorID.toLowerCase(); 
 
-    // Rutas
     const urlLogo = rutaLogos + distribuidorLower + '.png'; 
     const urlVideo = rutaVideos.toLowerCase() + nombreArchivoVideo + '.mp4'; 
     
-    // Asignación a la Página
     document.getElementById('logo').src = urlLogo;
     document.getElementById('video-player').src = urlVideo;
     
-    // Actualiza IDs de texto
-    const nombreModeloElement = document.getElementById('modelo-nombre');
-    if (nombreModeloElement) nombreModeloElement.textContent = nombreVisual; 
-
-    const nombreModeloFinalElement = document.getElementById('modelo-nombre-final');
-    if (nombreModeloFinalElement) nombreModeloFinalElement.textContent = nombreVisual; 
-    
-    const productoNombreVideoElement = document.getElementById('producto-nombre-video');
-    if (productoNombreVideoElement) productoNombreVideoElement.textContent = nombreVisual; 
+    document.getElementById('modelo-nombre').textContent = nombreVisual; 
+    document.getElementById('modelo-nombre-final').textContent = nombreVisual; 
+    document.getElementById('producto-nombre-video').textContent = nombreVisual; 
 }
 
 
@@ -293,7 +316,6 @@ function generarBotones(modeloBase, distribuidorID, colorInicial) {
     const colores = CATALOGO_COLORES[modeloBase];
     const wrapper = document.getElementById('colores-disponibles-wrapper');
 
-    // Limpiar botones anteriores si existen
     const existingContainer = wrapper.querySelector('.botones-colores-container');
     if (existingContainer) existingContainer.remove();
 
@@ -302,14 +324,14 @@ function generarBotones(modeloBase, distribuidorID, colorInicial) {
         return;
     }
 
-    wrapper.style.display = 'flex'; // Asegura que el contenedor de colores es visible
+    wrapper.style.display = 'flex'; 
 
     const botonesContainer = document.createElement('div');
     botonesContainer.className = 'botones-colores-container';
 
     colores.forEach(color => {
         const boton = document.createElement('button');
-        boton.textContent = color.replace(/_/g, ' '); // Formatear texto del botón (ej: BLANCO NUBE)
+        boton.textContent = color.replace(/_/g, ' '); 
         boton.className = 'boton-color';
         
         if (color === colorInicial) {
@@ -320,6 +342,8 @@ function generarBotones(modeloBase, distribuidorID, colorInicial) {
             document.querySelectorAll('.boton-color').forEach(btn => btn.classList.remove('activo'));
             boton.classList.add('activo');
             actualizarContenido(modeloBase, color, distribuidorID);
+            // 🛑 CLAVE: Repetir el zoom y el efecto de pantalla completa al cambiar de color
+            aplicarZoomInicial(); 
         };
         botonesContainer.appendChild(boton);
     });
@@ -337,9 +361,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const modeloIDBruto = urlParams.get('modelo'); 
     const distribuidorID = urlParams.get('distribuidor');
 
-    const videoWrapper = document.getElementById('video-wrapper');
-    const body = document.body;
-    
     if (distribuidorID && modeloIDBruto) {
         let modeloBase;
         let colorURL; 
@@ -359,36 +380,18 @@ document.addEventListener('DOMContentLoaded', () => {
         let colorID; 
         const coloresDisponibles = CATALOGO_COLORES[modeloBase];
         
-        // Determinar el color inicial: si el color de la URL existe, úsalo, si no, usa el primero
         if (coloresDisponibles.includes(colorURL)) {
             colorID = colorURL;
         } else {
             colorID = coloresDisponibles[0]; 
         }
 
-        // Inicializar el contenido y generar botones
+        // 1. Inicializar el contenido y generar botones
         actualizarContenido(modeloBase, colorID, distribuidorID);
         generarBotones(modeloBase, distribuidorID, colorID);
 
-        // LÓGICA DEL EFECTO ZOOM
-        body.classList.add('zoom-active'); 
-        videoWrapper.classList.add('video-zoom'); 
-
-        setTimeout(() => {
-            // 1. Quitar las clases de transición de zoom
-            videoWrapper.classList.remove('video-zoom');
-            body.classList.remove('zoom-active');
-            
-            // 2. Aplicar las clases del estado final
-            // Esto pondrá el video en modo pantalla completa - 10vh (para dejar espacio al menú)
-            videoWrapper.classList.add('pantalla-completa-final');
-            body.classList.add('modo-video-final');
-            
-            // 3. Asegurar que el video se reproduzca
-            const videoPlayer = document.getElementById('video-player');
-            videoPlayer.play();
-            
-        }, 4000); // Duración del zoom: 4 segundos
+        // 2. Aplicar el zoom inmediatamente al cargar la página
+        aplicarZoomInicial();
 
     } else {
         document.body.innerHTML = '<h1>Error: Código de producto o distribuidor no encontrado.</h1>';
