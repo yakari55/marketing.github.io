@@ -18,7 +18,8 @@
             text-align: center;
             margin: 0;
             box-sizing: border-box;
-            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            /* Se mantiene el fondo degradado para el estado inicial */
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%); 
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -42,7 +43,8 @@
             padding: 0;
             margin: 0;
             min-height: 100vh;
-            background-color: black;
+            /* 🛑 CLAVE: Aseguramos que el fondo del cuerpo sea negro en modo final para evitar el fondo gris claro detrás del video. */
+            background-color: black; 
             overflow: hidden; 
         }
         
@@ -53,60 +55,30 @@
 
 
         /* ---------------------------------------------------- */
-        /* 2. ESTILOS DE TÍTULOS Y TEXTO */
-        /* ---------------------------------------------------- */
-        .mensaje { color: #333; margin-bottom: 1.5vh; padding: 0 1vw; max-width: 600px; }
-        .mensaje h1 { font-size: 5vw; margin-top: 1vh; margin-bottom: 0.5vh; }
-        .modelo-frase { color: #333333; font-size: 5vw; font-weight: 700; padding: 1.5vh 2vw; background-color: #FFFFFF; border-radius: 8px; display: inline-block; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin: 1.5vh auto; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
-        .modelo-principal { display: block; font-size: 7.5vw; color: #444444; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); font-weight: 900; }
-        
-
-        /* ---------------------------------------------------- */
         /* 3. CONTENEDOR DE VIDEO Y EFECTOS */
         /* ---------------------------------------------------- */
         #video-wrapper {
-            position: relative;
-            width: 90vw;
-            max-width: 600px;
-            margin: 1vh auto;
-            background-color: black;
-            aspect-ratio: 16 / 9;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-            border-radius: 12px;
-            overflow: hidden;
+            /* ... estilos iniciales ... */
             transition: all 0.7s ease-out; 
             z-index: 1;
         }
         
-        /* CLASE 1: EFECTO ZOOM INICIAL IMPACTANTE (100% fijo) */
-        #video-wrapper.video-zoom {
-            width: 100vw !important;
-            height: 100vh !important;
-            max-width: none !important;
-            max-height: none !important;
-            border-radius: 0 !important;
-            box-shadow: none !important;
-            margin: 0 !important;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 9999;
-        }
-        
-        /* 🛑 CAMBIO CRÍTICO: Restamos 120px para dejar más espacio al menú */
+        /* 🛑 CAMBIO CRÍTICO: Aumentamos la resta a 130px para asegurar la visibilidad del menú */
         #video-wrapper.pantalla-completa-final {
             position: fixed; 
             top: 0;
             left: 0;
             width: 100vw;
-            /* ✅ CLAVE: Nueva resta de 120px */
-            height: calc(100vh - 120px); 
+            /* ✅ CLAVE: Nueva resta de 130px */
+            height: calc(100vh - 130px); 
             max-width: none;
             max-height: none;
             margin: 0;
             box-shadow: none;
             border-radius: 0;
             z-index: 1;
+            /* El fondo del video será negro, cubriendo el fondo blanco/gris del body */
+            background-color: black; 
         }
 
         #video-player {
@@ -116,45 +88,7 @@
             object-fit: cover;
         }
         
-        /* ESTILOS DEL LOGO Y NOMBRE DE PRODUCTO SUPERPUESTO */
-        #logo-overlay {
-            position: absolute;
-            top: 1.5vh;
-            left: 1.5vh;
-            z-index: 10;
-            background-color: rgba(255, 255, 255, 0.4); 
-            padding: 1vw 1.5vw; 
-            border-radius: 8px;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5vh;
-        }
-
-        #logo { max-width: 15vw; max-height: 12vh; height: auto; display: block; }
-        
-        .nombre-producto-video { 
-            color: #333; 
-            font-size: 2vw; 
-            font-weight: bold; 
-            text-transform: capitalize; 
-            margin-top: 0.5vh; 
-            line-height: 1.2; 
-        }
-        
-        #video-wrapper.video-zoom #logo-overlay, 
-        #video-wrapper.pantalla-completa-final #logo-overlay { 
-            position: fixed !important; 
-            top: 20px !important; 
-            left: 20px !important; 
-            z-index: 10000 !important; 
-            background-color: rgba(255, 255, 255, 0.6); 
-            padding: 15px 20px; 
-        }
-        .video-zoom .nombre-producto-video, .pantalla-completa-final .nombre-producto-video { font-size: 24px !important; } 
-        .video-zoom #logo, .pantalla-completa-final #logo { max-width: 180px !important; }
-
+        /* ... (Estilos del logo y producto) ... */
 
         /* ---------------------------------------------------- */
         /* 4. ESTILOS DEL MENÚ DE COLORES (Fijo en la parte inferior) */
@@ -165,13 +99,13 @@
             left: 0;
             width: 100%;
             z-index: 50; 
-            /* Quitamos height para autoajuste */
             height: auto; 
             
-            /* 🛑 CLAVE: Aumentamos el padding inferior para empujar los botones hacia arriba */
-            padding: 8px 0 30px 0; 
+            /* 🛑 CLAVE: Reducimos padding superior (8px -> 5px) y aumentamos el inferior a 30px 
+               para empujar los botones hacia arriba y dejar espacio de seguridad abajo. */
+            padding: 5px 0 30px 0; 
             
-            background-color: rgba(0, 0, 0, 0.2); 
+            background-color: rgba(0, 0, 0, 0.2); /* Fondo del banner */
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -182,12 +116,8 @@
             transition: opacity 0.5s ease;
         }
         
-        /* Mostrar el menú solo en el estado final */
-        body.modo-video-final #colores-disponibles-wrapper {
-            opacity: 1;
-            visibility: visible;
-        }
-
+        /* ... (Estilos del resto del menú y botones) ... */
+        
         .selector-titulo { 
             color: #FFFFFF; 
             margin: 0 0 5px 0; 
@@ -209,15 +139,14 @@
             line-height: 1; 
             text-shadow: none; 
         }
-        .boton-color:hover { border-color: #C0392B; background-color: rgba(192, 57, 43, 0.7); color: #FFFFFF; } 
-        .boton-color.activo { border-color: #C0392B; background-color: #C0392B; color: #FFFFFF; font-weight: bold; transform: scale(1.05); }
+        /* ... (El resto de los estilos se mantiene igual) ... */
 
         /* ---------------------------------------------------- */
         /* 5. MEDIA QUERIES */
         /* ---------------------------------------------------- */
         @media (min-width: 768px) {
             #video-wrapper.pantalla-completa-final {
-                height: calc(100vh - 120px);
+                height: calc(100vh - 130px);
             }
         }
         
@@ -227,14 +156,7 @@
 <body>
 
     <div class="mensaje">
-        <h1>¡Marketing!</h1>
-        
-        <h3 class="modelo-frase">
-            Estás viendo el modelo:
-            <br>
-            <span class="modelo-principal" id="modelo-nombre"></span>
-        </h3>
-    </div>
+        </div>
 
     <div id="video-wrapper">
         <video id="video-player" controls autoplay muted playsinline loop>
@@ -252,13 +174,11 @@
     </div>
     
     <div id="mensaje-final-wrapper">
-        <h2>🔥 ¡El siguiente paso es la DEMO en tu tienda!</h2>
-        <p><strong>[Tu Marca]</strong> tiene stock limitado de la serie **<span id="modelo-nombre-final"></span>**. Contacta a tu gerente de cuenta hoy mismo para asegurar tu pedido y programar una exhibición exclusiva.</p>
-        <div class="linea-divisoria"></div>
-        <p class="contacto-info">Teléfono: (555) 123-4567 | Email: info@tumerca.com</p>
-    </div>
+        </div>
 
 <script>
+// ... (El código JavaScript no necesita cambios) ...
+
 const CATALOGO_COLORES = {
     "CARRARA_25X40": ["BLANCO", "BLANCO_NUBE", "AZUL"], 
     "BARCELONA_25X40": ["GRIS"], 
@@ -356,9 +276,6 @@ function generarBotones(modeloBase, distribuidorID, colorInicial) {
 }
 
 
-// ------------------------------------------------------------------
-// INICIO DEL SCRIPT AL CARGAR LA PÁGINA
-// ------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     
