@@ -46,7 +46,7 @@
     /* ESTILO "WOW" EN DOS LÍNEAS PARA EL NOMBRE DEL MODELO */
     .modelo-frase {
         color: #333333;
-        font-size: 5vw; /* Tamaño más grande para "Estás viendo el modelo:" */
+        font-size: 4vw; /* Tamaño más grande para "Estás viendo el modelo:" */
         font-weight: 700; 
         padding: 1.5vh 2vw; 
         background-color: #FFFFFF; 
@@ -62,7 +62,7 @@
     /* ESTILO GIGANTE SOLO PARA EL NOMBRE DEL MODELO */
     .modelo-principal {
         display: block; 
-        font-size: 7.5vw; 
+        font-size: 5.5vw; 
         color: #444444; /* Gris Oscuro: Look Lujoso */
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); 
         font-weight: 900; 
@@ -270,7 +270,7 @@ function actualizarContenido(modelo, color, distribuidorID) {
     const nombreArchivoVideo = nombreCompletoArchivo.toUpperCase(); // Ej: CARRARA_25X40_BLANCO
     
     // Rutas
-    const urlLogo = rutaLogos + distribuidorID.toUpperCase() + '.png'; 
+    const urlLogo = rutaLogos + distribuidorID.toLowerCase() + '.png'; 
     const urlVideo = rutaVideos.toLowerCase() + nombreArchivoVideo + '.mp4'; 
     
     // ----------------------------------------------------
