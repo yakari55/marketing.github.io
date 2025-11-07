@@ -93,14 +93,14 @@
             z-index: 9999;
         }
         
-        /* ✅ CORRECCIÓN DE ALTURA FINAL: Restamos 120px para asegurar el espacio del menú */
+        /* ✅ CORRECCIÓN DE ALTURA FINAL: Restamos 90px (nueva altura del menú) */
         #video-wrapper.pantalla-completa-final {
             position: fixed; 
             top: 0;
             left: 0;
             width: 100vw;
-            /* 🛑 CLAVE: Nueva resta de 120px */
-            height: calc(100vh - 120px); 
+            /* 🛑 CLAVE: Resta de 90px */
+            height: calc(100vh - 90px); 
             max-width: none;
             max-height: none;
             margin: 0;
@@ -136,11 +136,11 @@
             left: 0;
             width: 100%;
             z-index: 50; 
-            /* ✅ CLAVE: Aumentamos la altura del menú a 120px */
-            height: 120px; 
-            /* Aseguramos que el contenido esté bien espaciado dentro de esos 120px */
-            padding: 10px 0; 
-            background-color: rgba(0, 0, 0, 0.8); 
+            /* ✅ CLAVE: Reducimos la altura del menú a 90px */
+            height: 90px; 
+            /* Alineación centrada para que los botones se vean completos */
+            padding: 0; /* Quitamos el padding vertical para optimizar el espacio */
+            background-color: rgba(0, 0, 0, 0.5); /* ✅ Fondo más claro */
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -158,10 +158,14 @@
             visibility: visible;
         }
 
-        .selector-titulo { color: #FFFFFF; margin: 0 0 10px 0; font-size: 0.9em; }
-        .botones-colores-container { margin: 0; max-width: 600px; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+        .selector-titulo { 
+            color: #FFFFFF; 
+            margin: 0 0 5px 0; /* ✅ Reducimos el margen inferior del título */
+            font-size: 0.8em; /* Hacemos el título más pequeño para ahorrar espacio */
+        }
+        .botones-colores-container { margin: 0; max-width: 600px; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; /* Reducimos el espacio entre botones */ }
         
-        .boton-color { padding: 8px 15px; border: 2px solid #ccc; background-color: #f8f8f8; color: #444; cursor: pointer; border-radius: 20px; font-size: 0.9em; transition: all 0.2s ease; text-transform: capitalize; }
+        .boton-color { padding: 6px 12px; border: 2px solid #ccc; background-color: #f8f8f8; color: #444; cursor: pointer; border-radius: 20px; font-size: 0.85em; /* Reducimos el tamaño de la fuente del botón */ transition: all 0.2s ease; text-transform: capitalize; }
         .boton-color:hover { border-color: #555; background-color: #e0e0e0; }
         .boton-color.activo { border-color: #C0392B; background-color: #C0392B; color: #FFFFFF; font-weight: bold; transform: scale(1.05); }
 
@@ -170,7 +174,7 @@
         /* ---------------------------------------------------- */
         @media (min-width: 768px) {
             #video-wrapper.pantalla-completa-final {
-                height: calc(100vh - 120px);
+                height: calc(100vh - 90px);
             }
         }
         
