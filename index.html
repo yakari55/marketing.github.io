@@ -55,9 +55,7 @@
         /* ---------------------------------------------------- */
         /* 2. ESTILOS DE TÍTULOS Y TEXTO */
         /* ---------------------------------------------------- */
-        .mensaje {
-            color: #333; margin-bottom: 1.5vh; padding: 0 1vw; max-width: 600px;
-        }
+        .mensaje { color: #333; margin-bottom: 1.5vh; padding: 0 1vw; max-width: 600px; }
         .mensaje h1 { font-size: 5vw; margin-top: 1vh; margin-bottom: 0.5vh; }
         .modelo-frase { color: #333333; font-size: 5vw; font-weight: 700; padding: 1.5vh 2vw; background-color: #FFFFFF; border-radius: 8px; display: inline-block; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); margin: 1.5vh auto; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
         .modelo-principal { display: block; font-size: 7.5vw; color: #444444; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); font-weight: 900; }
@@ -95,14 +93,14 @@
             z-index: 9999;
         }
         
-        /* ✅ CORRECCIÓN CLAVE: ESTADO FINAL DEL VIDEO EN MÓVIL (resta la altura exacta del menú) */
+        /* ✅ CORRECCIÓN DE ALTURA FINAL: Restamos 120px para asegurar el espacio del menú */
         #video-wrapper.pantalla-completa-final {
             position: fixed; 
             top: 0;
             left: 0;
             width: 100vw;
-            /* 🛑 CLAVE: Restamos 100px. Usaremos 100px fijos en lugar de vh para asegurar el espacio. */
-            height: calc(100vh - 100px); 
+            /* 🛑 CLAVE: Nueva resta de 120px */
+            height: calc(100vh - 120px); 
             max-width: none;
             max-height: none;
             margin: 0;
@@ -138,13 +136,16 @@
             left: 0;
             width: 100%;
             z-index: 50; 
-            /* 🛑 CLAVE: Altura fija de 100px, que coincide con lo restado al video */
-            height: 100px; 
-            padding: 1.5vh 0 1.5vh 0; 
+            /* ✅ CLAVE: Aumentamos la altura del menú a 120px */
+            height: 120px; 
+            /* Aseguramos que el contenido esté bien espaciado dentro de esos 120px */
+            padding: 10px 0; 
             background-color: rgba(0, 0, 0, 0.8); 
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            /* ✅ Centrado del contenido */
+            justify-content: center; 
             align-items: center;
             opacity: 0;
             visibility: hidden;
@@ -165,12 +166,11 @@
         .boton-color.activo { border-color: #C0392B; background-color: #C0392B; color: #FFFFFF; font-weight: bold; transform: scale(1.05); }
 
         /* ---------------------------------------------------- */
-        /* 5. MEDIA QUERIES (Ajustes para pantallas grandes/laptops) */
+        /* 5. MEDIA QUERIES */
         /* ---------------------------------------------------- */
         @media (min-width: 768px) {
-            /* Aseguramos la altura calculada también para desktop */
             #video-wrapper.pantalla-completa-final {
-                height: calc(100vh - 100px);
+                height: calc(100vh - 120px);
             }
         }
         
@@ -309,7 +309,7 @@ function generarBotones(modeloBase, distribuidorID, colorInicial) {
             document.querySelectorAll('.boton-color').forEach(btn => btn.classList.remove('activo'));
             boton.classList.add('activo');
             actualizarContenido(modeloBase, color, distribuidorID);
-            // CLAVE: Repetir el zoom y el efecto de pantalla completa al cambiar de color
+            // Repetir el zoom y el efecto de pantalla completa al cambiar de color
             aplicarZoomInicial(); 
         };
         botonesContainer.appendChild(boton);
@@ -333,7 +333,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let colorURL; 
         const modeloBrutoUpper = modeloIDBruto.toUpperCase();
         
-        // Detección del Modelo Base y Color de la URL
         const partes = modeloBrutoUpper.split('_');
         
         colorURL = partes[partes.length - 1]; 
