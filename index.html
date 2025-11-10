@@ -2,12 +2,20 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Marketing de Producto (Full Video Mode)</title>
     <style>
         /* ---------------------------------------------------- */
         /* 1. ESTILOS BASE Y CUERPO (BODY) */
         /* ---------------------------------------------------- */
+        :root {
+            /* Define una variable CSS que incluye el área segura inferior del móvil */
+            --safe-bottom: env(safe-area-inset-bottom, 20px); 
+            /* Se usa 20px como fallback si la propiedad no es compatible */
+            --menu-height-fixed: 120px; 
+            /* Altura base de separación para el menú */
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -93,14 +101,14 @@
             z-index: 9999;
         }
         
-        /* 🛑 CAMBIO CRÍTICO: Restamos 120px para dejar más espacio al menú */
+        /* 🛑 CLAVE: Restamos la altura fija del menú (120px) más el área segura inferior del móvil */
         #video-wrapper.pantalla-completa-final {
             position: fixed; 
             top: 0;
             left: 0;
             width: 100vw;
-            /* ✅ CLAVE: Nueva resta de 120px */
-            height: calc(100vh - 120px); 
+            /* Altura: 100vh - Altura Fija del Menú - Espacio de Navegación */
+            height: calc(100vh - var(--menu-height-fixed) - var(--safe-bottom)); 
             max-width: none;
             max-height: none;
             margin: 0;
@@ -122,38 +130,95 @@
             top: 1.5vh;
             left: 1.5vh;
             z-index: 10;
-            background-color: rgba(255, 255, 255, 0.4); 
+            /* ✅ Eliminado el fondo */
+            background-color: transparent; 
             padding: 1vw 1.5vw; 
             border-radius: 8px;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+            /* Sombra tenue para separación, si se desea, o eliminar */
+            box-shadow: none; 
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             gap: 0.5vh;
         }
 
-        #logo { max-width: 15vw; max-height: 12vh; height: auto; display: block; }
+        #logo { 
+            max-width: 15vw; 
+            max-height: 12vh; 
+            height: auto; 
+            display: block; 
+            /* ✅ Transparencia al logo */
+            opacity: 0.7; 
+            transition: opacity 0.3s ease;
+        }
         
+        /* El nombre del producto ya NO estará dentro de logo-overlay en el modo final */
         .nombre-producto-video { 
             color: #333; 
-            font-size: 2vw; 
+            font-size: 2.5vw; /* Aseguramos buena visibilidad en modo normal */
             font-weight: bold; 
             text-transform: capitalize; 
             margin-top: 0.5vh; 
             line-height: 1.2; 
         }
         
+        /* Estilos del logo en el modo final (con transparencia) */
         #video-wrapper.video-zoom #logo-overlay, 
         #video-wrapper.pantalla-completa-final #logo-overlay { 
             position: fixed !important; 
             top: 20px !important; 
             left: 20px !important; 
             z-index: 10000 !important; 
-            background-color: rgba(255, 255, 255, 0.6); 
-            padding: 15px 20px; 
+            background-color: transparent; /* Aseguramos que no haya fondo aquí tampoco */
+            padding: 0; /* No necesitamos padding si no hay fondo */
+            box-shadow: none; /* No hay sombra sin fondo */
+            display: flex; /* Mantener flex para la columna del logo */
+            flex-direction: column;
+            align-items: flex-start;
         }
-        .video-zoom .nombre-producto-video, .pantalla-completa-final .nombre-producto-video { font-size: 24px !important; } 
-        .video-zoom #logo, .pantalla-completa-final #logo { max-width: 180px !important; }
+        
+        #video-wrapper.video-zoom #logo, 
+        #video-wrapper.pantalla-completa-final #logo { 
+            max-width: 180px !important; 
+            opacity: 0.7 !important; /* Aseguramos transparencia también en zoom */
+        }
+
+        /* ---------------------------------------------------- */
+        /* NUEVO: Contenedor para el nombre del producto flotante */
+        /* ---------------------------------------------------- */
+        #producto-nombre-flotante {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100; /* Asegurarse de que esté por encima del video y el menú */
+            color: white;
+            font-size: 4vw; /* Tamaño responsivo para el título */
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 5px rgba(0, 0, 0, 0.5); /* Sombra para legibilidad */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0; /* Inicialmente oculto */
+            visibility: hidden;
+            transition: opacity 0.5s ease;
+            white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+        }
+
+        /* Mostrar el nombre del producto flotante solo en el modo final */
+        body.modo-video-final #producto-nombre-flotante {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* En el estado inicial, ocultamos el nombre del producto en #logo-overlay */
+        #logo-overlay .nombre-producto-video {
+            display: block; /* Volvemos a mostrarlo en el estado inicial si se desea */
+            /* Si quieres que NO aparezca en el estado inicial, cambia a display: none; */
+        }
+        /* Y cuando está en modo video final, lo ocultamos para que solo se vea el flotante */
+        body.modo-video-final #logo-overlay .nombre-producto-video {
+            display: none !important;
+        }
 
 
         /* ---------------------------------------------------- */
@@ -165,13 +230,13 @@
             left: 0;
             width: 100%;
             z-index: 50; 
-            /* Quitamos height para autoajuste */
             height: auto; 
             
-            /* 🛑 CLAVE: Aumentamos el padding inferior para empujar los botones hacia arriba */
-            padding: 8px 0 30px 0; 
+            /* ✅ CLAVE: Usamos el área segura para el padding inferior */
+            padding: 5px 0 calc(25px + var(--safe-bottom)) 0; 
             
-            background-color: rgba(0, 0, 0, 0.2); 
+            /* ✅ Aseguramos que el fondo inicial sea transparente */
+            background-color: transparent; 
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
@@ -182,9 +247,12 @@
             transition: opacity 0.5s ease;
         }
         
-        /* Mostrar el menú solo en el estado final */
+        /* Mostrar el menú solo en el estado final (¡Fondo del menú aquí!) */
         body.modo-video-final #colores-disponibles-wrapper {
             opacity: 1;
+            /* ✅ Fondo del menú unificado y más sutil, similar al logo */
+            background-color: rgba(0, 0, 0, 0.4); 
+            box-shadow: 0 -3px 6px rgba(0, 0, 0, 0.2); /* Sombra superior */
             visibility: visible;
         }
 
@@ -217,7 +285,13 @@
         /* ---------------------------------------------------- */
         @media (min-width: 768px) {
             #video-wrapper.pantalla-completa-final {
-                height: calc(100vh - 120px);
+                height: calc(100vh - var(--menu-height-fixed));
+            }
+            #colores-disponibles-wrapper {
+                padding: 5px 0 25px 0; 
+            }
+            #producto-nombre-flotante {
+                font-size: 3vw; /* Ajuste para escritorio */
             }
         }
         
@@ -246,6 +320,8 @@
         </div>
     </div>
     
+    <div id="producto-nombre-flotante"></div>
+
     <div id="colores-disponibles-wrapper">
         <p class="selector-titulo">Ver otros colores disponibles:</p>
         <div class="botones-colores-container"></div>
@@ -312,6 +388,11 @@ function actualizarContenido(modelo, color, distribuidorID) {
     
     document.getElementById('modelo-nombre').textContent = nombreVisual; 
     document.getElementById('modelo-nombre-final').textContent = nombreVisual; 
+    
+    // ✅ Actualizamos el nuevo elemento flotante con el nombre del producto
+    document.getElementById('producto-nombre-flotante').textContent = nombreVisual; 
+    
+    // El elemento original en overlay ahora se gestiona con display: none en CSS para el modo final
     document.getElementById('producto-nombre-video').textContent = nombreVisual; 
 }
 
