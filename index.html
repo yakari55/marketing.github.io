@@ -10,7 +10,7 @@
         /* ---------------------------------------------------- */
         :root {
             --safe-bottom: env(safe-area-inset-bottom, 20px); 
-            --menu-height-fixed: 120px; 
+            /* Se eliminó --menu-height-fixed ya que el video ocupa casi todo el 100% */
         }
 
         @keyframes fadeIn {
@@ -23,7 +23,6 @@
             text-align: center;
             margin: 0;
             box-sizing: border-box;
-            /* ✅ RESTAURADO: Fondo degradado para el estado inicial */
             background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%); 
             min-height: 100vh;
             display: flex;
@@ -49,7 +48,6 @@
             padding: 0;
             margin: 0;
             min-height: 100vh;
-            /* ✅ ASEGURADO: Fondo negro para el modo video final */
             background-color: black; 
             overflow: hidden; 
         }
@@ -101,13 +99,13 @@
             z-index: 9999;
         }
         
-        /* 🛑 CLAVE: El video ocupa su espacio restando la altura del menú inferior */
+        /* ✅ CORREGIDO: El video ocupa casi el 100% de la altura, sin reservar espacio fijo. */
         #video-wrapper.pantalla-completa-final {
             position: fixed; 
             top: 0;
             left: 0;
             width: 100vw;
-            /* Altura: 100vh - Altura Fija del Menú - Espacio de Navegación */
+            /* Altura: 100vh - Solo resta el espacio seguro del navegador (si existe) */
             height: calc(100vh - var(--safe-bottom)); 
             max-width: none;
             max-height: none;
@@ -220,8 +218,9 @@
             box-shadow: none; 
             box-sizing: border-box;
             
+            /* ✅ Contenedor principal para alinear el título y los botones */
             display: flex;
-            flex-direction: column; 
+            flex-direction: column; /* El título y los botones siguen apilados verticalmente */
             justify-content: flex-end; 
             align-items: flex-start; 
             
@@ -250,8 +249,9 @@
         }
         .botones-colores-container { 
             margin: 0; 
+            /* ✅ Botones uno al lado del otro */
             display: flex; 
-            flex-direction: column; 
+            flex-direction: row; /* ✅ CAMBIO CLAVE: De column a row */
             justify-content: flex-start; 
             flex-wrap: nowrap; 
             gap: 5px; 
@@ -273,11 +273,15 @@
             width: auto; 
             box-sizing: border-box; 
             text-align: center;
+            /* ✅ Sombra para cada botón */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); 
         }
         .boton-color:hover { 
             border-color: #C0392B; 
             background-color: rgba(192, 57, 43, 0.7); 
             color: #FFFFFF; 
+            /* ✅ Ajuste de sombra al hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); 
         } 
         .boton-color.activo { 
             border-color: #C0392B; 
@@ -285,6 +289,8 @@
             color: #FFFFFF; 
             font-weight: bold; 
             transform: scale(1.05); 
+            /* ✅ Ajuste de sombra al activo */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7); 
         }
 
         /* ---------------------------------------------------- */
@@ -339,14 +345,7 @@
         <p class="selector-titulo">COLORES DISP.</p>
         <div class="botones-colores-container"></div>
     </div>
-    
-    <div id="mensaje-final-wrapper">
-        <h2>🔥 ¡El siguiente paso es la DEMO en tu tienda!</h2>
-        <p><strong>[Tu Marca]</strong> tiene stock limitado de la serie **<span id="modelo-nombre-final"></span>**. Contacta a tu gerente de cuenta hoy mismo para asegurar tu pedido y programar una exhibición exclusiva.</p>
-        <div class="linea-divisoria"></div>
-        <p class="contacto-info">Teléfono: (555) 123-4567 | Email: info@tumerca.com</p>
-    </div>
-
+ 
 <script>
 const CATALOGO_COLORES = {
     "CARRARA_25X40": ["BLANCO", "BLANCO_NUBE", "AZUL"], 
