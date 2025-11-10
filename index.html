@@ -167,7 +167,7 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            animation: floatVertical 3s ease-in-out infinite;
             z-index: 100; 
             color: white;
            padding: 10px 20px; /* Más padding para que el fondo sea más visible */
@@ -192,13 +192,12 @@
             visibility: hidden;
             transition: opacity 0.5s ease, visibility 0.5s ease;
             white-space: nowrap;
-            animation: floatVertical 3s ease-in-out infinite;
         }
 
         @keyframes floatVertical {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-5px); } /* Sube 5px */
-            100% { transform: translateY(0); }
+            0% { transform: translate(-50%, -50%) translateY(0); } /* Combinación 1 */
+            50% { transform: translate(-50%, -50%) translateY(-5px); } /* Combinación 2 */
+            100% { transform: translate(-50%, -50%) translateY(0); } /* Combinación 1 */
         }
 
         body:not(.modo-video-final) #producto-nombre-flotante {
