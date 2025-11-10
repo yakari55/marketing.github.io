@@ -170,6 +170,9 @@
             transform: translate(-50%, -50%);
             z-index: 100; 
             color: white;
+           background-color: rgba(0, 0, 0, 0.4); /* Fondo negro con 40% de opacidad */
+           padding: 10px 20px; /* Más padding para que el fondo sea más visible */
+           border-radius: 10px; /* Bordes redondeados sutiles */
             
             font-size: 3vw; 
             font-weight: 400; 
@@ -177,10 +180,10 @@
 
             /* Efecto de réplica */
             text-shadow: 
-                0 -1px 1px rgba(255, 255, 255, 0.3), 
-                0 -2px 2px rgba(255, 255, 255, 0.15), 
-                0 1px 1px rgba(255, 255, 255, 0.3),  
-                0 2px 2px rgba(255, 255, 255, 0.15), 
+                0 -1px 1px rgba(255, 255, 255, 0.4), 
+                0 -2px 2px rgba(255, 255, 255, 0.2), 
+                0 1px 1px rgba(255, 255, 255, 0.4),  
+                0 2px 2px rgba(255, 255, 255, 0.2), 
                 0 0 8px rgba(0, 0, 0, 0.7),          
                 0 0 15px rgba(0, 0, 0, 0.4);         
 
@@ -189,7 +192,14 @@
             opacity: 0; 
             visibility: hidden;
             transition: opacity 0.5s ease, visibility 0.5s ease;
-            white-space: nowrap; 
+            white-space: nowrap;
+            animation: floatVertical 3s ease-in-out infinite;
+        }
+
+        @keyframes floatVertical {
+            0% { transform: translate(-50%, -50%) translateY(0); }
+            50% { transform: translate(-50%, -50%) translateY(-5px); } /* Sube 5px */
+            100% { transform: translate(-50%, -50%) translateY(0); }
         }
 
         body:not(.modo-video-final) #producto-nombre-flotante {
@@ -301,6 +311,7 @@
             }
             #producto-nombre-flotante {
                 font-size: 5vw;
+                padding: 8px 15px; /* Ajustar padding para pantallas pequeñas */
             }
             #colores-disponibles-wrapper {
                 bottom: 40px;
