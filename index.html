@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Marketing de Producto (Full Video Mode)</title>
+    <title>Marketing</title>
     <style>
         /* ---------------------------------------------------- */
         /* 1. ESTILOS BASE Y CUERPO (BODY) */
@@ -159,7 +159,6 @@
             visibility: hidden !important;
         }
 
-
         /* ---------------------------------------------------- */
         /* NOMBRE DEL PRODUCTO FLOTANTE (Centrado y Sutil) */
         /* ---------------------------------------------------- */
@@ -172,11 +171,9 @@
             color: white;
            padding: 10px 20px; /* Más padding para que el fondo sea más visible */
            border-radius: 10px; /* Bordes redondeados sutiles */
-            
             font-size: 3vw; 
             font-weight: 400; 
             font-family: 'Helvetica Neue', sans-serif; 
-
             /* Efecto de réplica */
             text-shadow: 
                 /* Borde/Contorno Negro para Contraste */
@@ -455,7 +452,7 @@
     </div>
 
     <div id="video-wrapper">
-        <video id="video-player" controls autoplay muted playsinline loop>
+        <video id="video-player" controls autoplay muted playsinline>
             Tu navegador no soporta el video.
         </video>
     </div>
@@ -470,6 +467,7 @@
         <p class="selector-titulo">COLORES DISP.</p>
         <div class="botones-colores-container"></div>
     </div>
+    
    <div id="mensaje-final-wrapper">
         <h2>🔥 ¡El siguiente paso es la DEMO en tu tienda!</h2>
         <p><strong>[Tu Marca]</strong> tiene stock limitado de la serie **<span id="modelo-nombre-final"></span>**. Contacta a tu gerente de cuenta hoy mismo para asegurar tu pedido y programar una exhibición exclusiva.</p>
@@ -477,6 +475,7 @@
         <p class="contacto-info">Teléfono: (555) 123-4567 | Email: info@tumerca.com</p>
     </div>    
  <script>
+     
 const CATALOGO_COLORES = {
     "CARRARA_25X40": ["BLANCO", "BLANCO_NUBE", "AZUL"], 
     "BARCELONA_25X40": ["GRIS"], 
