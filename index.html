@@ -38,7 +38,7 @@
         }
 
         /* Oculta los elementos estáticos durante el zoom */
-        body.zoom-active > *:not(#video-wrapper):not(#logo-overlay):not(#producto-nombre-flotante) { 
+        body.zoom-active > *:not(#video-wrapper):not(#logo-overlay):not(#producto-nombre-flotante):not(#colores-disponibles-wrapper) { 
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
@@ -53,6 +53,7 @@
             overflow: hidden; 
         }
         
+        /* Oculta los mensajes estáticos cuando el video está en modo final */
         body.modo-video-final .mensaje,
         body.modo-video-final #mensaje-final-wrapper {
             display: none !important;
@@ -148,10 +149,6 @@
             transition: opacity 0.3s ease;
         }
         
-        .nombre-producto-video { 
-            display: none !important;
-        }
-        
         body:not(.modo-video-final) #logo-overlay {
             opacity: 0 !important;
             visibility: hidden !important;
@@ -195,51 +192,39 @@
           0% { 
                 transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
                 text-shadow: 
-                    /* Contorno sutil */
                     1px 1px 0px rgba(0, 0, 0, 0.6), -1px -1px 0px rgba(0, 0, 0, 0.6), 1px -1px 0px rgba(0, 0, 0, 0.6), -1px 1px 0px rgba(0, 0, 0, 0.6),
-                    /* Sombra base ajustada */
                     0 0 5px rgba(255, 255, 255, 0.7), 
                     0 0 15px rgba(0, 0, 0, 0.6);      
             }
             25% { 
                 transform: translate(-50%, -50%) translateY(-12px) translateX(5px) scale(1.03); 
                 text-shadow: 
-                    /* Contorno sutil */
                     1px 1px 0px rgba(0, 0, 0, 0.6), -1px -1px 0px rgba(0, 0, 0, 0.6), 1px -1px 0px rgba(0, 0, 0, 0.6), -1px 1px 0px rgba(0, 0, 0, 0.6),
-                    /* Destello más prolongado/extenso */
                     0 30px 20px rgba(255, 255, 255, 0.4), 
                     0 15px 12px rgba(255, 255, 255, 0.6), 
-                    /* Brillo principal */
                     0 0 10px rgba(255, 255, 255, 0.9), 
                     0 0 25px rgba(255, 255, 255, 0.6);
             }
             50% { 
                 transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
                 text-shadow: 
-                    /* Contorno sutil */
                     1px 1px 0px rgba(0, 0, 0, 0.6), -1px -1px 0px rgba(0, 0, 0, 0.6), 1px -1px 0px rgba(0, 0, 0, 0.6), -1px 1px 0px rgba(0, 0, 0, 0.6),
-                    /* Sombra base ajustada */
                     0 0 5px rgba(255, 255, 255, 0.7), 
                     0 0 15px rgba(0, 0, 0, 0.6);
             }
             75% { 
                 transform: translate(-50%, -50%) translateY(12px) translateX(-5px) scale(0.97); 
                 text-shadow: 
-                    /* Contorno sutil */
                     1px 1px 0px rgba(0, 0, 0, 0.6), -1px -1px 0px rgba(0, 0, 0, 0.6), 1px -1px 0px rgba(0, 0, 0, 0.6), -1px 1px 0px rgba(0, 0, 0, 0.6),
-                    /* Destello más prolongado/extenso */
                     0 -30px 20px rgba(255, 255, 255, 0.4), 
                     0 -15px 12px rgba(255, 255, 255, 0.6), 
-                    /* Brillo principal */
                     0 0 10px rgba(255, 255, 255, 0.9), 
                     0 0 25px rgba(255, 255, 255, 0.6);
             }
             100% { 
                 transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
                 text-shadow: 
-                    /* Contorno sutil */
                     1px 1px 0px rgba(0, 0, 0, 0.6), -1px -1px 0px rgba(0, 0, 0, 0.6), 1px -1px 0px rgba(0, 0, 0, 0.6), -1px 1px 0px rgba(0, 0, 0, 0.6),
-                    /* Sombra base ajustada */
                     0 0 5px rgba(255, 255, 255, 0.7), 
                     0 0 15px rgba(0, 0, 0, 0.6); 
             }
@@ -250,7 +235,7 @@
             visibility: hidden !important;
         }
         
-        /* ✅ CLAVE: Muestra los overlays (Logo y Nombre Producto) después del zoom */
+        /* Muestra los overlays (Logo y Nombre Producto) después del zoom */
         body.show-overlay-elements #logo-overlay,
         body.show-overlay-elements #producto-nombre-flotante {
             opacity: 1;
@@ -281,16 +266,21 @@
             transition: opacity 0.5s ease;
         }
         
-        /* ✅ NUEVO: Visible al entrar al modo video, y MANTENIDO en la pantalla final */
-        body.modo-video-final #colores-disponibles-wrapper,
+        /* Visible al entrar al modo video, y MANTENIDO en la pantalla final */
+        body.modo-video-final #colores-disponibles-wrapper { 
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Reposición en la pantalla final */
         #final-screen-overlay.show #colores-disponibles-wrapper { 
             opacity: 1;
             visibility: visible;
-            position: absolute; /* Para que quede anclado a la pantalla final */
-            bottom: 40px; /* Separación del borde */
+            position: absolute; 
+            bottom: 40px; 
             left: 50%;
             transform: translateX(-50%);
-            align-items: center; /* Centrar elementos en el wrapper */
+            align-items: center; 
         }
 
         .selector-titulo { 
@@ -307,7 +297,7 @@
             border-radius: 5px; 
         }
         #final-screen-overlay.show .selector-titulo {
-             color: var(--color-slogan); /* Color oscuro */
+             color: var(--color-slogan); 
              background-color: rgba(255, 255, 255, 0.8);
              text-shadow: none;
              border: 1px solid #ccc;
@@ -376,14 +366,14 @@
             visibility: visible;
         }
         
-        /* ✅ NUEVO: Animación para el Logo */
+        /* Animación para el Logo */
         @keyframes subtlePulse {
             0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); }
             50% { transform: scale(1.01); filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3)); }
             100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2)); }
         }
         
-        /* ✅ CAMBIO: Logo final con efecto de aparición y pulsación */
+        /* Logo final con efecto de aparición y pulsación */
         #final-logo {
             max-width: 200px;
             margin-bottom: 5px; 
@@ -393,7 +383,7 @@
                        subtlePulse 4s ease-in-out infinite 2s; 
         }
         
-        /* ✅ CAMBIO: Eslogan con entrada suave y más cerca del logo */
+        /* Eslogan con entrada suave y más cerca del logo */
         #final-slogan {
             color: var(--color-slogan); 
             font-size: 3.5vw; 
@@ -402,7 +392,7 @@
             font-style: italic; 
             text-align: center;
             padding: 0 20px;
-            margin-top: 5px; /* ✅ Subido: Más cerca del logo */
+            margin-top: 5px; /* Subido: Más cerca del logo */
             opacity: 0;
             transform: translateY(10px); 
             animation: fadeInSlideUp 1s ease-out 1s forwards; 
@@ -427,16 +417,13 @@
                 max-width: 150px;
             }
             #final-slogan {
-                font-size: 6vw; /* Eslogan más grande en móviles */
+                font-size: 6vw; 
             }
             #final-screen-overlay.show #colores-disponibles-wrapper {
                  bottom: 20px;
             }
         }
 
-        /* ---------------------------------------------------- */
-        /* 6. MEDIA QUERIES */
-        /* ---------------------------------------------------- */
             
     </style>
 </head>
@@ -504,20 +491,19 @@ function aplicarZoomInicial() {
     finalScreen.classList.remove('show');
     
     // 2. Estado Inicial: Títulos visibles, Overlays ocultos
-    body.classList.remove('show-overlay-elements'); // Ocultar overlays del video
+    body.classList.remove('show-overlay-elements'); 
     videoWrapper.classList.remove('pantalla-completa-final');
     body.classList.remove('modo-video-final');
-    videoWrapper.style.display = 'block'; // Asegura que el video se muestre
+    videoWrapper.style.display = 'block'; 
     
     // 3. Aplicar Zoom
     body.classList.add('zoom-active'); 
     videoWrapper.classList.add('video-zoom'); 
     
-    // Si el video está cargado, lo reinicia
     videoPlayer.currentTime = 0; 
     videoPlayer.play();
 
-    // 4. Temporizador para salir del Zoom (dando más tiempo al video)
+    // 4. Temporizador para salir del Zoom (6.5 segundos)
     setTimeout(() => {
         videoWrapper.classList.remove('video-zoom');
         body.classList.remove('zoom-active');
@@ -526,12 +512,14 @@ function aplicarZoomInicial() {
         videoWrapper.classList.add('pantalla-completa-final');
         body.classList.add('modo-video-final');
         
-        // 6. Retrasar la aparición del logo, nombre flotante y menú de colores
+        // 6. Retrasar la aparición del logo, nombre flotante y menú de colores (0.5 segundos)
         setTimeout(() => {
             body.classList.add('show-overlay-elements'); 
+            // El menú de colores también se muestra aquí, aunque su posición final
+            // dentro del overlay de video es "fixed: bottom-left".
         }, 500); 
 
-    }, 6500); // ✅ AUMENTADO: 6.5 segundos para dar más tiempo de visualización
+    }, 6500); // Duración total del zoom
 }
 
 function actualizarContenido(modelo, color, distribuidorID) {
@@ -613,7 +601,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const partes = modeloBrutoUpper.split('_');
         
-        colorURL = partes[parTES.length - 1]; 
+        colorURL = partes[partes.length - 1]; 
         modeloBase = partes.slice(0, partes.length - 1).join('_'); 
 
         if (!CATALOGO_COLORES[modeloBase]) {
@@ -640,14 +628,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
         // ------------------------------------------------------------------
-        // NUEVO: Manejar el final del video para mostrar la pantalla final
+        // Manejar el final del video para mostrar la pantalla final
         // ------------------------------------------------------------------
         const videoPlayer = document.getElementById('video-player');
         const finalScreenOverlay = document.getElementById('final-screen-overlay');
         
         videoPlayer.addEventListener('ended', () => {
             // Cuando el video termina:
-            // 1. Ocultar overlays que NO deben ir en la pantalla final (Solo el logo flotante/producto)
+            // 1. Ocultar overlays que NO deben ir en la pantalla final
             document.body.classList.remove('show-overlay-elements');
             
             // 2. Ocultar el video-wrapper y el modo video
