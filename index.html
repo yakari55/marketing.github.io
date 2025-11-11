@@ -41,7 +41,7 @@
         body.zoom-active > *:not(#video-wrapper):not(#logo-overlay):not(#producto-nombre-flotante):not(#colores-disponibles-wrapper) { 
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease;
         }
 
         body.modo-video-final {
@@ -82,7 +82,7 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
             border-radius: 12px;
             overflow: hidden;
-            transition: all 0.7s ease-out; 
+            transition: all 1s ease-out; 
             z-index: 1;
         }
         
@@ -146,7 +146,7 @@
             height: auto; 
             display: block; 
             opacity: 0.7; 
-            transition: opacity 0.3s ease;
+            transition: opacity 0.5s ease;
         }
         
         body:not(.modo-video-final) #logo-overlay {
@@ -261,10 +261,9 @@
             flex-direction: column; 
             justify-content: flex-end; 
             align-items: flex-start; 
-            
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.8s ease;
         }
         
         /* Visible al entrar al modo video, y MANTENIDO en la pantalla final */
@@ -294,7 +293,6 @@
             text-shadow: 0 0 5px rgba(0,0,0,0.7); 
             text-align: left; 
             line-height: 1.2;
-            
             background-color: rgba(0, 0, 0, 0.4);
             padding: 4px 8px; 
             border-radius: 5px; 
