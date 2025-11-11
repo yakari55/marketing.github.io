@@ -167,7 +167,7 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            animation: slideUpWave 3.5s ease-out infinite;
+            animation: slideUpWave 2.5s ease-out infinite;
             z-index: 100; 
             color: white;
            padding: 10px 20px; /* Más padding para que el fondo sea más visible */
@@ -183,9 +183,9 @@
                 0 -2px 2px rgba(255, 255, 255, 0.2), 
                 0 1px 1px rgba(255, 255, 255, 0.4),  
                 0 2px 2px rgba(255, 255, 255, 0.2), */
-                0 0 8px rgba(0, 0, 0, 0.7),          
+                0 0 8px rgba(255, 255, 255, 0.7),          
                /* 0 0 15px rgba(0, 0, 0, 0.4);   */ 
-                0 0 15px rgba(255, 255, 255, 0.4);
+                0 0 15px rgba(0, 0, 0, 0.4);
 
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -198,33 +198,46 @@
         @keyframes slideUpWave {
              0% { 
                 transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
-                /* Sombra base */
-                text-shadow: 0 0 8px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 0, 0, 0.4); 
+                /* Sombra base (puede ser blanca o un poco más sutil) */
+                text-shadow: 
+                    0 0 5px rgba(255, 255, 255, 0.7), /* Un brillo sutil alrededor del texto */
+                    0 0 15px rgba(0, 0, 0, 0.4);      /* La sombra negra de fondo para contraste */
             }
             25% { 
                 transform: translate(-50%, -50%) translateY(-12px) translateX(5px) scale(1.03); 
-                /* ✅ EFECTO DESTELOO/RÉPLICA: Sombra fuerte hacia abajo (opuesta al movimiento) que simula el rastro */
+                /* ✅ EFECTO DESTELOO/RÉPLICA LUMINOSA: */
                 text-shadow: 
-                    0 15px 10px rgba(255, 255, 255, 0.3), /* Rastro más claro hacia abajo */
-                    0 -12px 2px rgba(0, 0, 0, 0.9),       /* Sombra de contorno principal */
-                    0 0 20px rgba(255, 255, 255, 0.7);    /* Destello más fuerte */
+                    /* Rastro luminoso que se extiende hacia abajo (opuesto al movimiento principal hacia arriba) */
+                    0 20px 15px rgba(255, 255, 255, 0.5), /* Más bajo, más extendido, más brillante */
+                    0 10px 10px rgba(255, 255, 255, 0.7), /* Otra capa de rastro más cercana */
+                    /* Brillo principal alrededor del texto cuando está arriba */
+                    0 0 10px rgba(255, 255, 255, 0.9), 
+                    0 0 25px rgba(255, 255, 255, 0.6);
             }
             50% { 
                 transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
-                /* Sombra base normal en el centro */
-                text-shadow: 0 0 8px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 0, 0, 0.4); 
+                /* Vuelve a la sombra base en el centro */
+                text-shadow: 
+                    0 0 5px rgba(255, 255, 255, 0.7), 
+                    0 0 15px rgba(0, 0, 0, 0.4);
             }
             75% { 
                 transform: translate(-50%, -50%) translateY(12px) translateX(-5px) scale(0.97); 
-                /* ✅ EFECTO DESTELOO/RÉPLICA: Sombra fuerte hacia arriba (opuesta al movimiento) */
+                /* ✅ EFECTO DESTELOO/RÉPLICA LUMINOSA: */
                 text-shadow: 
-                    0 -15px 10px rgba(255, 255, 255, 0.3), /* Rastro más claro hacia arriba */
-                    0 12px 2px rgba(0, 0, 0, 0.9),        /* Sombra de contorno principal */
-                    0 0 20px rgba(255, 255, 255, 0.7);     /* Destello más fuerte */
+                    /* Rastro luminoso que se extiende hacia arriba (opuesto al movimiento principal hacia abajo) */
+                    0 -20px 15px rgba(255, 255, 255, 0.5), /* Más alto, más extendido, más brillante */
+                    0 -10px 10px rgba(255, 255, 255, 0.7), /* Otra capa de rastro más cercana */
+                    /* Brillo principal alrededor del texto cuando está abajo */
+                    0 0 10px rgba(255, 255, 255, 0.9), 
+                    0 0 25px rgba(255, 255, 255, 0.6);
             }
             100% { 
                 transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
-                text-shadow: 0 0 8px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 0, 0, 0.4); 
+                /* Vuelve a la sombra base */
+                text-shadow: 
+                    0 0 5px rgba(255, 255, 255, 0.7), 
+                    0 0 15px rgba(0, 0, 0, 0.4); 
             }
             }
         
