@@ -189,7 +189,7 @@
         }
 
         @keyframes slideUpWave {
-          0% { 
+            0% { 
                 transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
                 text-shadow: 
                     1px 1px 0px rgba(0, 0, 0, 0.6), -1px -1px 0px rgba(0, 0, 0, 0.6), 1px -1px 0px rgba(0, 0, 0, 0.6), -1px 1px 0px rgba(0, 0, 0, 0.6),
@@ -269,9 +269,6 @@
         /* Visible al entrar al modo video, y MANTENIDO en la pantalla final */
         body.modo-video-final #colores-disponibles-wrapper { 
             /* Se maneja con .show-overlay-elements ahora para el modo video. */
-            /* Se mantiene esta regla por si acaso. */
-            /* opacity: 1;
-            visibility: visible; */
         }
         
         /* Reposición en la pantalla final */
@@ -298,10 +295,10 @@
             border-radius: 5px; 
         }
         #final-screen-overlay.show .selector-titulo {
-             color: var(--color-slogan); 
-             background-color: rgba(255, 255, 255, 0.8);
-             text-shadow: none;
-             border: 1px solid #ccc;
+              color: var(--color-slogan); 
+              background-color: rgba(255, 255, 255, 0.8);
+              text-shadow: none;
+              border: 1px solid #ccc;
         }
         .botones-colores-container { 
             margin: 0; 
@@ -381,7 +378,7 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInSlideUp 1s ease-out 0.5s forwards, 
-                       subtlePulse 4s ease-in-out infinite 2s; 
+                        subtlePulse 4s ease-in-out infinite 2s; 
         }
         
         /* Eslogan con entrada suave y más cerca del logo */
@@ -421,11 +418,9 @@
                 font-size: 6vw; 
             }
             #final-screen-overlay.show #colores-disponibles-wrapper {
-                 bottom: 20px;
+                bottom: 20px;
             }
         }
-
-            
     </style>
 </head>
 
@@ -467,7 +462,7 @@
     
     <div id="final-screen-overlay">
         <img id="final-logo" src="./empresa/vizcaya.png" alt="Logo de la Empresa Final">
-        <p id="final-slogan">"Espacios que Enamoran"</p>
+        <p id="final-slogan">"Cerámicas de calidad superior, hechas en Venezuela"</p>
     </div>
     
 <script>
@@ -482,74 +477,94 @@ const CATALOGO_COLORES = {
 const rutaLogos = './cliente/'; 
 const rutaVideos = './video/'; 
 
+// =================================================================
+// FUNCIÓN CORREGIDA Y REESTRUCTURADA: aplicarZoomInicial()
+// =================================================================
 function aplicarZoomInicial() {
     const videoWrapper = document.getElementById('video-wrapper');
     const body = document.body;
     const videoPlayer = document.getElementById('video-player');
     const finalScreen = document.getElementById('final-screen-overlay');
 
-    // 1. Resetear y Ocultar la pantalla final
+    // Constantes de tiempo
+    const duracionZoom = 3000; // 3 segundos (Debe coincidir con el CSS)
+    const duracionVisualizacionOverlays = 10000; // 10 segundos
+
+    // 1. Resetear el estado visual y de pantalla final
     finalScreen.classList.remove('show');
-    
-    // 2. Estado Inicial: Títulos visibles, Overlays ocultos
     body.classList.remove('show-overlay-elements'); 
     videoWrapper.classList.remove('pantalla-completa-final');
     body.classList.remove('modo-video-final');
     videoWrapper.style.display = 'block'; 
-    
-    // 3. Aplicar Zoom (Clase video-zoom y zoom-active)
-    body.classList.add('zoom-active'); 
-    videoWrapper.classList.add('video-zoom'); 
-    
-    videoPlayer.currentTime = 0; 
+    body.classList.remove('zoom-active'); 
+    videoWrapper.classList.remove('video-zoom'); 
+
+    // 2. Preparar la carga del nuevo video y forzar el inicio
+    videoPlayer.currentTime = 0;
     videoPlayer.load(); 
-    videoPlayer.play().catch(error => {
-    // Esto captura errores si el navegador bloquea el autoplay.
-    console.log("Autoplay bloqueado, el usuario debe interactuar para reproducir el video completo.");
-    });
+    
+    // =================================================================
+    // PUNTO CLAVE: ESPERAR A QUE EL VIDEO ESTÉ LISTO
+    // =================================================================
+    videoPlayer.onloadeddata = () => { // <-- INICIAMOS EL FLUJO AL CARGARSE EL VIDEO
 
-    // 4. Temporizador 1: Salir del Zoom y activar Overlays
-    const duracionZoom = 3000; // 3 segundos para la transición CSS de zoom
-    const duracionVisualizacionOverlays = 10000; // 10 segundos
+        // Aseguramos la reproducción (Manejo de Promesa)
+        videoPlayer.play().catch(error => {
+             console.log("Advertencia de Autoplay: La reproducción automática puede haber sido bloqueada, continuando con el flujo.");
+             videoPlayer.muted = true; // Intenta reproducir silenciado
+             videoPlayer.play();
+        });
 
-    setTimeout(() => {
-        // Fin de la transición de zoom
-        videoWrapper.classList.remove('video-zoom');
-        body.classList.remove('zoom-active');
-        
-        // Entrar en modo de video en pantalla completa con reproducción continua
-        videoWrapper.classList.add('pantalla-completa-final');
-        body.classList.add('modo-video-final');
-        
-        // Activar los Overlays (Logo, Nombre Flotante, Menú de Colores)
+        // 3. Aplicar Zoom (Clase video-zoom y zoom-active)
+        body.classList.add('zoom-active'); 
+        videoWrapper.classList.add('video-zoom'); 
+
+        // 4. Temporizador 1: Salir del Zoom y activar Overlays
         setTimeout(() => {
-            body.classList.add('show-overlay-elements'); 
-        }, 50); 
-        
-        // 5. Temporizador 2: Esperar 10 segundos adicionales de reproducción con overlays visibles
-        const duracionVisualizacionOverlays = 10000; // 10 segundos
+            // Fin de la transición de zoom (se ejecuta a los 3 segundos)
+            videoWrapper.classList.remove('video-zoom');
+            body.classList.remove('zoom-active');
+            
+            // Entrar en modo de video en pantalla completa con reproducción continua
+            videoWrapper.classList.add('pantalla-completa-final');
+            body.classList.add('modo-video-final');
+            
+            // Activar los Overlays (Nombre, Colores, etc.)
+            setTimeout(() => {
+                body.classList.add('show-overlay-elements'); 
+            }, 50); 
 
-        setTimeout(() => {
-            // FIN de la reproducción y paso a la pantalla final
-            
-            // Ocultar overlays
-            document.body.classList.remove('show-overlay-elements');
-            
-            // Ocultar el video-wrapper y el modo video
-            document.getElementById('video-wrapper').style.display = 'none'; 
-            document.body.classList.remove('modo-video-final');
-            
-            // Mostrar la pantalla final
-            finalScreen.classList.add('show');
-            
-            // Detener el video si no ha terminado
-            videoPlayer.pause();
-            
-        }, duracionVisualizacionOverlays);
+            // 5. Temporizador 2: FIN de la reproducción y paso a la pantalla final
+            // Se ejecuta 10 segundos después del fin del zoom
+            setTimeout(() => {
+                // Ocultar overlays
+                document.body.classList.remove('show-overlay-elements');
+                
+                // Ocultar el video-wrapper y el modo video
+                document.getElementById('video-wrapper').style.display = 'none'; 
+                document.body.classList.remove('modo-video-final');
+                
+                // Mostrar la pantalla final
+                finalScreen.classList.add('show');
+                
+                // Detener el video
+                videoPlayer.pause();
+                
+                // Limpiar el manejador de eventos
+                videoPlayer.onloadeddata = null; 
+                
+            }, duracionVisualizacionOverlays);
 
-    }, duracionZoom); // Espera la duración del zoom (2 segundos) antes de activar los overlays y el temporizador de 10s.
-
+        }, duracionZoom); 
+    };
+    
+    // Si el video ya está cargado (sucede en el clic de botón después del primer zoom),
+    // disparamos manualmente el flujo para no esperar al evento 'onloadeddata'.
+    if (videoPlayer.readyState >= 2) {
+        videoPlayer.onloadeddata();
+    }
 }
+
 
 function actualizarContenido(modelo, color, distribuidorID) {
     const nombreCompletoArchivo = `${modelo}_${color}`;
@@ -574,6 +589,9 @@ function actualizarContenido(modelo, color, distribuidorID) {
 }
 
 
+// =================================================================
+// FUNCIÓN CORREGIDA: generarBotones()
+// =================================================================
 function generarBotones(modeloBase, distribuidorID, colorInicial) {
     const colores = CATALOGO_COLORES[modeloBase];
     const wrapper = document.getElementById('colores-disponibles-wrapper');
@@ -607,7 +625,8 @@ function generarBotones(modeloBase, distribuidorID, colorInicial) {
             document.querySelectorAll('.boton-color').forEach(btn => btn.classList.remove('activo'));
             boton.classList.add('activo');
             actualizarContenido(modeloBase, color, distribuidorID);
-            const videoPlayer = document.getElementById('video-player');
+            // **IMPORTANTE:** Eliminamos la pausa manual innecesaria.
+            // La función aplicarZoomInicial() ahora maneja la carga y el play()
             aplicarZoomInicial(); 
         };
         botonesContainer.appendChild(boton);
@@ -658,7 +677,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
 });
-    
 </script>
 </body>
 </html>
