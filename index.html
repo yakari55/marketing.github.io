@@ -167,7 +167,7 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            animation: waveEffect 2.5s ease-in-out infinite;
+            animation: slideUpWave 3.5s ease-out infinite;
             z-index: 100; 
             color: white;
            padding: 10px 20px; /* Más padding para que el fondo sea más visible */
@@ -194,23 +194,20 @@
             white-space: nowrap;
         }
 
-        @keyframes waveEffect {
+        @keyframes slideUpWave {
              0% { 
-                transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
-            }
-            25% { 
-                transform: translate(-50%, -50%) translateY(-12px) translateX(5px) scale(1.03); /* Más arriba, más a la derecha, más grande */
+        transform: translate(-50%, calc(-50% + 10px)); /* Empieza 10px más abajo de su centro */
+        opacity: 0.8; /* Ligeramente transparente al inicio */
             }
             50% { 
-                transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); /* Vuelve al centro */
-            }
-            75% { 
-                transform: translate(-50%, -50%) translateY(12px) translateX(-5px) scale(0.97); /* Más abajo, más a la izquierda, más pequeño */
+                transform: translate(-50%, calc(-50% - 5px)); /* Sube 5px por encima de su centro */
+                opacity: 1; /* Totalmente visible en el punto más alto */
             }
             100% { 
-                transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); /* Vuelve al centro */
+                transform: translate(-50%, calc(-50% + 10px)); /* Vuelve a la posición inicial */
+                opacity: 0.8;
             }
-            }
+        }
         
         body:not(.modo-video-final) #producto-nombre-flotante {
             opacity: 0 !important;
