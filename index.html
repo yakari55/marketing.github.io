@@ -179,12 +179,13 @@
 
             /* Efecto de réplica */
             text-shadow: 
-                0 -1px 1px rgba(255, 255, 255, 0.4), 
+                /*0 -1px 1px rgba(255, 255, 255, 0.4), 
                 0 -2px 2px rgba(255, 255, 255, 0.2), 
                 0 1px 1px rgba(255, 255, 255, 0.4),  
-                0 2px 2px rgba(255, 255, 255, 0.2), 
+                0 2px 2px rgba(255, 255, 255, 0.2), */
                 0 0 8px rgba(0, 0, 0, 0.7),          
-                0 0 15px rgba(0, 0, 0, 0.4);         
+               /* 0 0 15px rgba(0, 0, 0, 0.4);   */ 
+                0 0 15px rgba(255, 255, 255, 0.4);
 
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -196,18 +197,36 @@
 
         @keyframes slideUpWave {
              0% { 
-        transform: translate(-50%, calc(-50% + 10px)); /* Empieza 10px más abajo de su centro */
-        opacity: 0.8; /* Ligeramente transparente al inicio */
+                transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
+                /* Sombra base */
+                text-shadow: 0 0 8px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 0, 0, 0.4); 
+            }
+            25% { 
+                transform: translate(-50%, -50%) translateY(-12px) translateX(5px) scale(1.03); 
+                /* ✅ EFECTO DESTELOO/RÉPLICA: Sombra fuerte hacia abajo (opuesta al movimiento) que simula el rastro */
+                text-shadow: 
+                    0 15px 10px rgba(255, 255, 255, 0.3), /* Rastro más claro hacia abajo */
+                    0 -12px 2px rgba(0, 0, 0, 0.9),       /* Sombra de contorno principal */
+                    0 0 20px rgba(255, 255, 255, 0.7);    /* Destello más fuerte */
             }
             50% { 
-                transform: translate(-50%, calc(-50% - 5px)); /* Sube 5px por encima de su centro */
-                opacity: 1; /* Totalmente visible en el punto más alto */
+                transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
+                /* Sombra base normal en el centro */
+                text-shadow: 0 0 8px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 0, 0, 0.4); 
+            }
+            75% { 
+                transform: translate(-50%, -50%) translateY(12px) translateX(-5px) scale(0.97); 
+                /* ✅ EFECTO DESTELOO/RÉPLICA: Sombra fuerte hacia arriba (opuesta al movimiento) */
+                text-shadow: 
+                    0 -15px 10px rgba(255, 255, 255, 0.3), /* Rastro más claro hacia arriba */
+                    0 12px 2px rgba(0, 0, 0, 0.9),        /* Sombra de contorno principal */
+                    0 0 20px rgba(255, 255, 255, 0.7);     /* Destello más fuerte */
             }
             100% { 
-                transform: translate(-50%, calc(-50% + 10px)); /* Vuelve a la posición inicial */
-                opacity: 0.8;
+                transform: translate(-50%, -50%) translateY(0px) translateX(0px) scale(1.0); 
+                text-shadow: 0 0 8px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 0, 0, 0.4); 
             }
-        }
+            }
         
         body:not(.modo-video-final) #producto-nombre-flotante {
             opacity: 0 !important;
