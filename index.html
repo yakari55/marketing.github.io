@@ -462,6 +462,9 @@ const rutaVideos = './video/';
 // =================================================================
 // FUNCIÓN CORREGIDA Y REESTRUCTURADA: aplicarZoomInicial()
 // =================================================================
+// =================================================================
+// FUNCIÓN CORREGIDA Y REESTRUCTURADA: aplicarZoomInicial()
+// =================================================================
 function aplicarZoomInicial(esCambioDeColor = false) { 
     const videoWrapper = document.getElementById('video-wrapper');
     const body = document.body;
@@ -481,24 +484,25 @@ function aplicarZoomInicial(esCambioDeColor = false) {
     body.classList.remove('zoom-active'); 
     videoWrapper.classList.remove('video-zoom'); 
 
-    // 2. Control de Loop y Limpieza de Eventos
-    // FIX CLAVE 1: Siempre activamos el loop para que el video no se detenga si es corto.
-    videoPlayer.loop = true; 
+    // Restaurar la propiedad loop y limpiar el onended.
+    videoPlayer.loop = esCambioDeColor; // Loop solo si es un cambio de color
     videoPlayer.onended = null;
     videoPlayer.onloadeddata = null;
+
+    // 2. Preparar la carga del nuevo video y forzar el inicio
     videoPlayer.currentTime = 0;
     
-    // 3. Forzar reproducción y aplicar Zoom
+    // 3. Aplicar Zoom (Clase video-zoom y zoom-active)
     videoPlayer.play().catch(error => {
-        // Manejo silencioso de error de autoplay
-        videoPlayer.muted = true; 
-        videoPlayer.play();
+         console.log("Advertencia de Autoplay: La reproducción automática puede haber sido bloqueada, continuando con el flujo.");
+         videoPlayer.muted = true; // Intenta reproducir silenciado
+         videoPlayer.play();
     });
 
     body.classList.add('zoom-active'); 
     videoWrapper.classList.add('video-zoom'); 
 
-    // 4. Temporizador 1: Salir del Zoom y activar Overlays (3s)
+    // 4. Temporizador 1: Salir del Zoom y activar Overlays (a los 3 segundos)
     setTimeout(() => {
         // Fin de la transición de zoom
         videoWrapper.classList.remove('video-zoom');
@@ -514,25 +518,23 @@ function aplicarZoomInicial(esCambioDeColor = false) {
         }, 50); 
 
         // 5. Temporizador 2: FIN de la reproducción y paso a la pantalla final
-        // Esto SOLO se ejecuta si NO es un cambio de color.
-        if (!esCambioDeColor) {
+        // FIX: Se elimina la condición 'if (!esCambioDeColor)'
+        // Ahora siempre se programa el paso a la pantalla final a los 10s.
+        setTimeout(() => {
+            // Ocultar overlays
+            document.body.classList.remove('show-overlay-elements');    
+            // Ocultar el video-wrapper y el modo video
+            document.getElementById('video-wrapper').style.display = 'none'; 
+            document.body.classList.remove('modo-video-final');
             
-            // Si es la carga inicial (o no es un cambio de color), 
-            // establecemos el tiempo para la transición final.
-            setTimeout(() => {
-                document.body.classList.remove('show-overlay-elements'); 
-                document.getElementById('video-wrapper').style.display = 'none'; 
-                document.body.classList.remove('modo-video-final');
-                document.getElementById('final-screen-overlay').classList.add('show');
-                
-                // FIX CLAVE 2: Desactivamos el loop y pausamos SOLO al ir a la pantalla final.
-                videoPlayer.loop = false; 
-                videoPlayer.pause();
-                
-            }, duracionVisualizacionOverlays);
-        }
-        // Si es cambio de color (esCambioDeColor=true), la función termina aquí, 
-        // dejando el video en bucle infinito con los overlays visibles (loop=true).
+            // Mostrar la pantalla final
+            document.getElementById('final-screen-overlay').classList.add('show');
+            
+            // Detener el video
+            videoPlayer.pause();
+            videoPlayer.loop = false; // Detener el bucle de forma explícita
+            
+        }, duracionVisualizacionOverlays);
 
     }, duracionZoom); 
 }
