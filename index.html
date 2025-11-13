@@ -462,213 +462,209 @@ const rutaVideos = './video/';
 // =================================================================
 // FUNCIÓN CORREGIDA Y REESTRUCTURADA: aplicarZoomInicial()
 // =================================================================
-function aplicarZoomInicial() {
-    const videoWrapper = document.getElementById('video-wrapper');
-    const body = document.body;
-    const videoPlayer = document.getElementById('video-player');
-    const finalScreen = document.getElementById('final-screen-overlay');
+function aplicarZoomInicial(esCambioDeColor = false) { // <--- CORRECCIÓN 1
+        const videoWrapper = document.getElementById('video-wrapper');
+        const body = document.body;
+        const videoPlayer = document.getElementById('video-player');
+        const finalScreen = document.getElementById('final-screen-overlay');
 
-    // Constantes de tiempo
-    const duracionZoom = 3000; // 3 segundos (Debe coincidir con el CSS)
-    const duracionVisualizacionOverlays = 10000; // 10 segundos
+        // Constantes de tiempo
+        const duracionZoom = 3000; // 3 segundos (Debe coincidir con el CSS)
+        const duracionVisualizacionOverlays = 10000; // 10 segundos
 
-    // 1. Resetear el estado visual y de pantalla final
-    finalScreen.classList.remove('show');
-    body.classList.remove('show-overlay-elements'); 
-    videoWrapper.classList.remove('pantalla-completa-final');
-    body.classList.remove('modo-video-final');
-    videoWrapper.style.display = 'block'; 
-    body.classList.remove('zoom-active'); 
-    videoWrapper.classList.remove('video-zoom'); 
+        // 1. Resetear el estado visual y de pantalla final
+        finalScreen.classList.remove('show');
+        body.classList.remove('show-overlay-elements'); 
+        videoWrapper.classList.remove('pantalla-completa-final');
+        body.classList.remove('modo-video-final');
+        videoWrapper.style.display = 'block'; 
+        body.classList.remove('zoom-active'); 
+        videoWrapper.classList.remove('video-zoom'); 
 
-    // **NUEVO:** Restaurar la propiedad loop y limpiar el onended.
-    videoPlayer.loop = true; 
-    videoPlayer.onended = null;
+        // **NUEVO:** Restaurar la propiedad loop y limpiar el onended.
+        videoPlayer.loop = !esCambioDeColor; // Loop solo si es un cambio de color
+        videoPlayer.onended = null;
 
-    // 2. Preparar la carga del nuevo video y forzar el inicio
-    videoPlayer.currentTime = 0;
-    videoPlayer.load(); 
-    
-    // =================================================================
-    // PUNTO CLAVE: ESPERAR A QUE EL VIDEO ESTÉ LISTO
-    // =================================================================
-    videoPlayer.onloadeddata = () => { // <-- INICIAMOS EL FLUJO AL CARGARSE EL VIDEO
+        // 2. Preparar la carga del nuevo video y forzar el inicio
+        videoPlayer.currentTime = 0;
+        videoPlayer.load(); 
+        
+        // =================================================================
+        // PUNTO CLAVE: ESPERAR A QUE EL VIDEO ESTÉ LISTO
+        // =================================================================
+        videoPlayer.onloadeddata = () => { // <-- INICIAMOS EL FLUJO AL CARGARSE EL VIDEO
 
-        // Aseguramos la reproducción (Manejo de Promesa)
-        videoPlayer.play().catch(error => {
-             console.log("Advertencia de Autoplay: La reproducción automática puede haber sido bloqueada, continuando con el flujo.");
-             videoPlayer.muted = true; // Intenta reproducir silenciado
-             videoPlayer.play();
-        });
+            // Aseguramos la reproducción (Manejo de Promesa)
+            videoPlayer.play().catch(error => {
+                 console.log("Advertencia de Autoplay: La reproducción automática puede haber sido bloqueada, continuando con el flujo.");
+                 videoPlayer.muted = true; // Intenta reproducir silenciado
+                 videoPlayer.play();
+            });
 
-        // 3. Aplicar Zoom (Clase video-zoom y zoom-active)
-        body.classList.add('zoom-active'); 
-        videoWrapper.classList.add('video-zoom'); 
+            // 3. Aplicar Zoom (Clase video-zoom y zoom-active)
+            body.classList.add('zoom-active'); 
+            videoWrapper.classList.add('video-zoom'); 
 
-        // 4. Temporizador 1: Salir del Zoom y activar Overlays
-        setTimeout(() => {
-            // Fin de la transición de zoom (se ejecuta a los 3 segundos)
-            videoWrapper.classList.remove('video-zoom');
-            body.classList.remove('zoom-active');
-            
-            // Entrar en modo de video en pantalla completa con reproducción continua
-            videoWrapper.classList.add('pantalla-completa-final');
-            body.classList.add('modo-video-final');
-            
-            // Activar los Overlays (Nombre, Colores, etc.)
+            // 4. Temporizador 1: Salir del Zoom y activar Overlays
             setTimeout(() => {
-                body.classList.add('show-overlay-elements'); 
-            }, 50); 
+                // Fin de la transición de zoom (se ejecuta a los 3 segundos)
+                videoWrapper.classList.remove('video-zoom');
+                body.classList.remove('zoom-active');
+                
+                // Entrar en modo de video en pantalla completa con reproducción continua
+                videoWrapper.classList.add('pantalla-completa-final');
+                body.classList.add('modo-video-final');
+                
+                // Activar los Overlays (Nombre, Colores, etc.)
+                setTimeout(() => {
+                    body.classList.add('show-overlay-elements'); 
+                }, 50); 
 
-            // **PUNTO CLAVE DE CORRECCIÓN:** Solo ejecutar el temporizador final si NO es un cambio de color
-            if (!esCambioDeColor) {
-            // 5. Temporizador 2: FIN de la reproducción y paso a la pantalla final
-            // Se ejecuta 10 segundos después del fin del zoom
-            setTimeout(() => {
-                // Ocultar overlays
-                document.body.classList.remove('show-overlay-elements');   
-                // Ocultar el video-wrapper y el modo video
-                document.getElementById('video-wrapper').style.display = 'none'; 
-                document.body.classList.remove('modo-video-final');
-                
-                // Mostrar la pantalla final
-                document.getElementById('final-screen-overlay').classList.add('show');
-               // finalScreen.classList.add('show');
-                
-                // Detener el video
-              videoPlayer.pause();
-                
-                // Limpiar el manejador de eventos
-             videoPlayer.onloadeddata = null; 
-                
-            }, duracionVisualizacionOverlays);
-            } else {
-                 // Si es cambio de color, aseguramos que el loop funcione
-                 videoPlayer.loop = true;
-            }
+                // **PUNTO CLAVE DE CORRECCIÓN:** Solo ejecutar el temporizador final si NO es un cambio de color
+                if (!esCambioDeColor) {
+                // 5. Temporizador 2: FIN de la reproducción y paso a la pantalla final
+                // Se ejecuta 10 segundos después del fin del zoom
+                setTimeout(() => {
+                    // Ocultar overlays
+                    document.body.classList.remove('show-overlay-elements');    
+                    // Ocultar el video-wrapper y el modo video
+                    document.getElementById('video-wrapper').style.display = 'none'; 
+                    document.body.classList.remove('modo-video-final');
+                    
+                    // Mostrar la pantalla final
+                    document.getElementById('final-screen-overlay').classList.add('show');
+                   // finalScreen.classList.add('show');
+                    
+                    // Detener el video
+                   videoPlayer.pause();
+                    
+                    // Limpiar el manejador de eventos
+                   videoPlayer.onloadeddata = null; 
+                    
+                }, duracionVisualizacionOverlays);
+                } else {
+                     // Si es cambio de color, aseguramos que el loop funcione
+                     videoPlayer.loop = true;
+                }
 
-        }, duracionZoom); 
-    };
-    
-    // Si el video ya está cargado (sucede en el clic de botón después del primer zoom),
-    // disparamos manualmente el flujo para no esperar al evento 'onloadeddata'.
-    if (videoPlayer.readyState >= 2) {
-        videoPlayer.onloadeddata();
+            }, duracionZoom); 
+        };
+        
+        // Si el video ya está cargado (sucede en el clic de botón después del primer zoom),
+        // disparamos manualmente el flujo para no esperar al evento 'onloadeddata'.
+        if (videoPlayer.readyState >= 2) {
+            videoPlayer.onloadeddata();
+        }
     }
-}
 
 
 function actualizarContenido(modelo, color, distribuidorID) {
-    const nombreCompletoArchivo = `${modelo}_${color}`;
-    
-    let nombreVisual = nombreCompletoArchivo.replace(/_/g, ' '); 
-    nombreVisual = nombreVisual.toLowerCase(); 
-    nombreVisual = nombreVisual.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); 
+        // ... (Tu código de actualización de contenido) ...
+        const nombreCompletoArchivo = `${modelo}_${color}`;
+        
+        let nombreVisual = nombreCompletoArchivo.replace(/_/g, ' '); 
+        nombreVisual = nombreVisual.toLowerCase(); 
+        nombreVisual = nombreVisual.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); 
 
-    const nombreArchivoVideo = nombreCompletoArchivo.toUpperCase(); 
-    const distribuidorLower = distribuidorID.toLowerCase(); 
+        const nombreArchivoVideo = nombreCompletoArchivo.toUpperCase(); 
+        const distribuidorLower = distribuidorID.toLowerCase(); 
 
-    const urlLogo = rutaLogos + distribuidorLower + '.png'; 
-    const urlVideo = rutaVideos.toLowerCase() + nombreArchivoVideo + '.mp4'; 
-    
-    document.getElementById('logo').src = urlLogo;
-    document.getElementById('video-player').src = urlVideo;
-    
-  //  document.getElementById('modelo-nombre').textContent = nombreVisual; 
-  //  document.getElementById('modelo-nombre-final').textContent = nombreVisual; 
-    
-    document.getElementById('producto-nombre-flotante').textContent = nombreVisual; 
-}
-
+        const urlLogo = rutaLogos + distribuidorLower + '.png'; 
+        const urlVideo = rutaVideos.toLowerCase() + nombreArchivoVideo + '.mp4'; 
+        
+        document.getElementById('logo').src = urlLogo;
+        document.getElementById('video-player').src = urlVideo;
+        
+        document.getElementById('producto-nombre-flotante').textContent = nombreVisual; 
+    }
 
 // =================================================================
 // FUNCIÓN CORREGIDA: generarBotones()
 // =================================================================
 function generarBotones(modeloBase, distribuidorID, colorInicial) {
-    const colores = CATALOGO_COLORES[modeloBase];
-    const wrapper = document.getElementById('colores-disponibles-wrapper');
+        // ... (Tu código de generación de botones) ...
+        const colores = CATALOGO_COLORES[modeloBase];
+        const wrapper = document.getElementById('colores-disponibles-wrapper');
 
-    let botonesContainer = wrapper.querySelector('.botones-colores-container');
-    if (!botonesContainer) {
-        botonesContainer = document.createElement('div');
-        botonesContainer.className = 'botones-colores-container';
-        wrapper.appendChild(botonesContainer);
-    } else {
-        botonesContainer.innerHTML = ''; 
-    }
-
-    if (!colores || colores.length <= 1) {
-        wrapper.style.display = 'none';
-        return;
-    }
-
-    wrapper.style.display = 'flex'; 
-
-    colores.forEach(color => {
-        const boton = document.createElement('button');
-        boton.textContent = color.replace(/_/g, ' '); 
-        boton.className = 'boton-color';
-        
-        if (color === colorInicial) {
-            boton.classList.add('activo');
+        let botonesContainer = wrapper.querySelector('.botones-colores-container');
+        if (!botonesContainer) {
+            botonesContainer = document.createElement('div');
+            botonesContainer.className = 'botones-colores-container';
+            wrapper.appendChild(botonesContainer);
+        } else {
+            botonesContainer.innerHTML = ''; 
         }
 
-        boton.onclick = () => {
-            document.querySelectorAll('.boton-color').forEach(btn => btn.classList.remove('activo'));
-            boton.classList.add('activo');
-            actualizarContenido(modeloBase, color, distribuidorID);
-            // **IMPORTANTE:** Eliminamos la pausa manual innecesaria.
-            // La función aplicarZoomInicial() ahora maneja la carga y el play()
-            aplicarZoomInicial(); 
-        };
-        botonesContainer.appendChild(boton);
-    });
-}
+        if (!colores || colores.length <= 1) {
+            wrapper.style.display = 'none';
+            return;
+        }
 
+        wrapper.style.display = 'flex'; 
+
+        colores.forEach(color => {
+            const boton = document.createElement('button');
+            boton.textContent = color.replace(/_/g, ' '); 
+            boton.className = 'boton-color';
+            
+            if (color === colorInicial) {
+                boton.classList.add('activo');
+            }
+
+            boton.onclick = () => {
+                document.querySelectorAll('.boton-color').forEach(btn => btn.classList.remove('activo'));
+                boton.classList.add('activo');
+                actualizarContenido(modeloBase, color, distribuidorID);
+                aplicarZoomInicial(true); // <--- CORRECCIÓN 3: Le indica que es un cambio de color (mantener loop)
+            };
+            botonesContainer.appendChild(boton);
+        });
+    }
 
 // ------------------------------------------------------------------
 // INICIO DEL SCRIPT AL CARGAR LA PÁGINA
 // ------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    const modeloIDBruto = urlParams.get('modelo'); 
-    const distribuidorID = urlParams.get('distribuidor');
-
-    if (distribuidorID && modeloIDBruto) {
-        let modeloBase;
-        let colorURL; 
-        const modeloBrutoUpper = modeloIDBruto.toUpperCase();
+        // ... (Tu lógica de URLParams) ...
+        const urlParams = new URLSearchParams(window.location.search);
         
-        const partes = modeloBrutoUpper.split('_');
-        
-        colorURL = partes[partes.length - 1]; 
-        modeloBase = partes.slice(0, partes.length - 1).join('_'); 
+        const modeloIDBruto = urlParams.get('modelo'); 
+        const distribuidorID = urlParams.get('distribuidor');
 
-        if (!CATALOGO_COLORES[modeloBase]) {
-             document.body.innerHTML = '<h1>Error: Modelo base no encontrado en el catálogo.</h1>';
-             return;
-        }
+        if (distribuidorID && modeloIDBruto) {
+            let modeloBase;
+            let colorURL; 
+            const modeloBrutoUpper = modeloIDBruto.toUpperCase();
+            
+            const partes = modeloBrutoUpper.split('_');
+            
+            colorURL = partes[partes.length - 1]; 
+            modeloBase = partes.slice(0, partes.length - 1).join('_'); 
 
-        let colorID; 
-        const coloresDisponibles = CATALOGO_COLORES[modeloBase];
-        
-        if (coloresDisponibles.includes(colorURL)) {
-            colorID = colorURL;
+            if (!CATALOGO_COLORES[modeloBase]) {
+                 document.body.innerHTML = '<h1>Error: Modelo base no encontrado en el catálogo.</h1>';
+                 return;
+            }
+
+            let colorID; 
+            const coloresDisponibles = CATALOGO_COLORES[modeloBase];
+            
+            if (coloresDisponibles.includes(colorURL)) {
+                colorID = colorURL;
+            } else {
+                colorID = coloresDisponibles[0]; 
+            }
+
+            actualizarContenido(modeloBase, colorID, distribuidorID);
+            generarBotones(modeloBase, distribuidorID, colorID);
+
+            aplicarZoomInicial(false); // <--- CORRECCIÓN 2: Llama con 'false' o simplemente 'aplicarZoomInicial()'
+
         } else {
-            colorID = coloresDisponibles[0]; 
+            document.body.innerHTML = '<h1>Error: Código de producto o distribuidor no encontrado.</h1>';
         }
-
-        actualizarContenido(modeloBase, colorID, distribuidorID);
-        generarBotones(modeloBase, distribuidorID, colorID);
-
-        aplicarZoomInicial(false);
-
-    } else {
-        document.body.innerHTML = '<h1>Error: Código de producto o distribuidor no encontrado.</h1>';
-    }
-    
-});
+        
+    });
 </script>
 </body>
 </html>
