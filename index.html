@@ -460,81 +460,82 @@ const rutaLogos = './cliente/'; 
 const rutaVideos = './video/'; 
 
 // =================================================================
-// FUNCIÓN CORREGIDA Y REESTRUCTURADA: aplicarZoomInicial()
+// FUNCIÓN CORREGIDA FINAL: aplicarZoomInicial()
 // =================================================================
 function aplicarZoomInicial(esCambioDeColor = false) { 
-    const videoWrapper = document.getElementById('video-wrapper');
-    const body = document.body;
-    const videoPlayer = document.getElementById('video-player');
-    const finalScreen = document.getElementById('final-screen-overlay');
+    const videoWrapper = document.getElementById('video-wrapper');
+    const body = document.body;
+    const videoPlayer = document.getElementById('video-player');
+    const finalScreen = document.getElementById('final-screen-overlay');
 
-    // MODIFICACIÓN CLAVE: El tiempo de espera es casi instantáneo si es un cambio de color.
-    const duracionDelay = esCambioDeColor ? 50 : 3000; // 50ms para color, 3000ms para carga inicial
-    const duracionVisualizacionOverlays = 10000; // 10 segundos
+    const duracionDelay = esCambioDeColor ? 50 : 3000; 
+    const duracionVisualizacionOverlays = 10000; 
 
-    // 1. Resetear el estado visual y de pantalla final
-    finalScreen.classList.remove('show');
-    body.classList.remove('show-overlay-elements'); 
-    videoWrapper.classList.remove('pantalla-completa-final');
-    body.classList.remove('modo-video-final');
-    videoWrapper.style.display = 'block'; 
-    body.classList.remove('zoom-active'); 
-    videoWrapper.classList.remove('video-zoom'); 
+    // 1. Resetear el estado visual y de pantalla final
+    finalScreen.classList.remove('show');
+    body.classList.remove('show-overlay-elements'); 
+    videoWrapper.classList.remove('pantalla-completa-final');
+    body.classList.remove('modo-video-final');
+    videoWrapper.style.display = 'block'; 
+    body.classList.remove('zoom-active'); 
+    videoWrapper.classList.remove('video-zoom'); 
 
-    // Restaurar la propiedad loop y limpiar el onended.
-    videoPlayer.loop = esCambioDeColor; 
-    videoPlayer.onended = null;
-    videoPlayer.onloadeddata = null;
+    // FIX 1: Inicialmente no hace loop, pero sí al final del zoom inicial
+    // FIX 2: Para el cambio de color, siempre hace loop.
+    videoPlayer.loop = esCambioDeColor; 
+    videoPlayer.onended = null;
+    videoPlayer.onloadeddata = null;
 
-    // 2. Preparar la carga del nuevo video y forzar el inicio
-    videoPlayer.currentTime = 0;
-    
-    videoPlayer.play().catch(error => {
-         console.log("Advertencia de Autoplay: La reproducción automática puede haber sido bloqueada, continuando con el flujo.");
-         videoPlayer.muted = true;
-         videoPlayer.play();
-    });
+    // 2. Preparar la carga del nuevo video y forzar el inicio
+    videoPlayer.currentTime = 0;
+    
+    videoPlayer.play().catch(error => {
+        console.log("Advertencia de Autoplay: La reproducción automática puede haber sido bloqueada, continuando con el flujo.");
+        videoPlayer.muted = true;
+        videoPlayer.play();
+    });
 
-    // 3. Aplicar Zoom (Clase video-zoom y zoom-active) - SOLO si es carga inicial
-    if (!esCambioDeColor) {
-        body.classList.add('zoom-active'); 
-        videoWrapper.classList.add('video-zoom'); 
-    }
+    // 3. Aplicar Zoom (Clase video-zoom y zoom-active) - SOLO si es carga inicial
+    if (!esCambioDeColor) {
+        body.classList.add('zoom-active'); 
+        videoWrapper.classList.add('video-zoom'); 
+    }
 
-    // 4. Temporizador: Salir del Zoom (o continuar inmediatamente) y activar Overlays
-    setTimeout(() => {
-        // Fin de la transición de zoom (o transición inmediata)
-        videoWrapper.classList.remove('video-zoom');
-        body.classList.remove('zoom-active');
-        
-        // Entrar en modo de video en pantalla completa con reproducción continua
-        videoWrapper.classList.add('pantalla-completa-final');
-        body.classList.add('modo-video-final');
-        
-        // Activar los Overlays (Nombre, Colores, etc.)
-        setTimeout(() => {
-            body.classList.add('show-overlay-elements'); 
-        }, 50); 
+    // 4. Temporizador: Salir del Zoom (o continuar inmediatamente) y activar Overlays
+    setTimeout(() => {
+        // Fin de la transición de zoom (o transición inmediata)
+        videoWrapper.classList.remove('video-zoom');
+        body.classList.remove('zoom-active');
+        
+        // Entrar en modo de video en pantalla completa con reproducción continua
+        videoWrapper.classList.add('pantalla-completa-final');
+        body.classList.add('modo-video-final');
+        
+        // FIX 1 (Parte 2): Si es carga inicial, poner el video en loop después del zoom.
+        if (!esCambioDeColor) {
+             videoPlayer.loop = true; 
+        }
+        
+        // Activar los Overlays (Nombre, Colores, etc.)
+        setTimeout(() => {
+            body.classList.add('show-overlay-elements'); 
+        }, 50); 
 
-        // 5. Temporizador 2: FIN de la reproducción y paso a la pantalla final
-        // Se mantiene la lógica de que siempre se programa el paso a la pantalla final.
-        setTimeout(() => {
-            // Ocultar overlays
-            document.body.classList.remove('show-overlay-elements');    
-            // Ocultar el video-wrapper y el modo video
-            document.getElementById('video-wrapper').style.display = 'none'; 
-            document.body.classList.remove('modo-video-final');
-            
-            // Mostrar la pantalla final
-            document.getElementById('final-screen-overlay').classList.add('show');
-            
-            // Detener el video
-            videoPlayer.pause();
-            videoPlayer.loop = false; // Detener el bucle de forma explícita
-            
-        }, duracionVisualizacionOverlays);
+        // 5. Temporizador 2: FIN de la reproducción y paso a la pantalla final
+        // FIX 2: Solo programar el paso a la pantalla final en la carga inicial.
+        if (!esCambioDeColor) { 
+            setTimeout(() => {
+                document.body.classList.remove('show-overlay-elements'); 
+                document.getElementById('video-wrapper').style.display = 'none'; 
+                document.body.classList.remove('modo-video-final');
+                document.getElementById('final-screen-overlay').classList.add('show');
+                videoPlayer.pause();
+                videoPlayer.loop = false;
+            }, duracionVisualizacionOverlays);
+        }
+        // NOTA: Si es un cambio de color, el video loopeará indefinidamente.
 
-    }, duracionDelay); // Utiliza el tiempo de espera modificado.
+    }, duracionDelay); 
 }
     
 // =================================================================
