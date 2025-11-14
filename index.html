@@ -488,50 +488,48 @@ const rutaLogos = './cliente/'; 
 const rutaVideos = './video/'; 
 
 // =================================================================
-// NUEVA FUNCIÓN: iniciarEfectoMaquinaEscribir()
+// FUNCIÓN DE MÁQUINA DE ESCRIBIR CORREGIDA (V2)
 // =================================================================
 function iniciarEfectoMaquinaEscribir(elementoID, duracionSegundos) {
     const element = document.getElementById(elementoID);
     if (!element) return;
 
-    // 1. Limpiar el texto y las clases de la ejecución anterior
-    const textoCompleto = element.textContent;
-    element.textContent = '';
-    element.classList.remove('typewriter-effect'); // Se añade de nuevo más abajo
+    // Obtener el texto completo antes de manipular el contenido.
+    const textoCompleto = element.getAttribute('data-original-text');
+    if (!textoCompleto) return;
 
-    // 2. Crear el contenedor interno con el efecto
-    let spanTypewriter = element.querySelector('.typewriter-span');
-    if (!spanTypewriter) {
-        spanTypewriter = document.createElement('span');
-        spanTypewriter.className = 'typewriter-span';
-        element.appendChild(spanTypewriter);
-    }
+    // 1. Limpiar el contenedor sin afectar su animación CSS.
+    element.innerHTML = '';
+    
+    // 2. Crear el <span> para aplicar el efecto de máquina de escribir
+    let spanTypewriter = document.createElement('span');
+    spanTypewriter.className = 'typewriter-effect';
     spanTypewriter.textContent = textoCompleto;
     
-    // 3. Aplicar las clases y estilos CSS necesarios al span
-    spanTypewriter.classList.add('typewriter-effect');
+    // Insertar el span en el contenedor flotante
+    element.appendChild(spanTypewriter);
     
-    // 4. Calcular duraciones de animación
+    // 3. Calcular duraciones de animación
     const steps = textoCompleto.length;
     
-    // Crear la regla CSS de animación directamente para que sea dinámica
-    const styleSheet = document.styleSheets[0];
-    const typingAnimationRule = `typing-${elementoID} ${duracionSegundos}s steps(${steps}, end)`;
-    const caretAnimationRule = `blink-caret .75s step-end infinite`;
-    
-    // Establecer las animaciones dinámicamente
-    spanTypewriter.style.animation = `${typingAnimationRule}, ${caretAnimationRule}`;
+    // Aplicar las animaciones
+    spanTypewriter.style.animation = 
+        `typing ${duracionSegundos}s steps(${steps}, end), ` + 
+        `blink-caret .75s step-end infinite`;
 
-    // Asegurar que al final la animación se detenga y el cursor se esconda (opcional)
+    // 4. Asegurar que al final el cursor se esconda y el texto se mantenga visible
     setTimeout(() => {
         spanTypewriter.style.borderRight = 'none'; // Oculta el cursor
-        spanTypewriter.style.width = '100%'; // Asegura que se vea todo
-        spanTypewriter.style.animation = 'none'; // Detiene la animación
-    }, duracionSegundos * 1000 + 50); 
+        spanTypewriter.style.width = '100%'; 
+        spanTypewriter.style.animation = 'none'; // Detiene la animación para evitar consumo innecesario
+        
+        // Opcional: Para mantener el texto en su lugar si la fuente monoespacio lo movió un poco
+        spanTypewriter.style.fontFamily = 'inherit'; 
+    }, duracionSegundos * 1000 + 100); 
 }
 
 // =================================================================
-// FUNCIÓN CORREGIDA FINAL: aplicarZoomInicial()
+// FUNCIÓN aplicarZoomInicial() (Ajustes de Duración)
 // =================================================================
 function aplicarZoomInicial(esCambioDeColor = false) { 
     const videoWrapper = document.getElementById('video-wrapper');
@@ -540,11 +538,14 @@ function aplicarZoomInicial(esCambioDeColor = false) {
     const finalScreen = document.getElementById('final-screen-overlay');
 
     // Duraciones
+    // Si es cambio de color, el delay es 50ms y la visualización es 15 segundos.
+    // Si es carga inicial, el delay es 3000ms (zoom) y la visualización es 10 segundos.
     const duracionDelay = esCambioDeColor ? 50 : 3000; 
-    // Ahora, 15 segundos (15000ms) para el cambio de color, 10 segundos para la carga inicial.
     const duracionVisualizacionOverlays = esCambioDeColor ? 15000 : 10000; 
+    const duracionEfectoTypewriter = 4; // 4 segundos para que se escriba el texto
 
     // 1. Resetear el estado visual y de pantalla final
+    // ... (El resto del código de reset es correcto)
     finalScreen.classList.remove('show');
     body.classList.remove('show-overlay-elements'); 
     videoWrapper.classList.remove('pantalla-completa-final');
@@ -554,8 +555,7 @@ function aplicarZoomInicial(esCambioDeColor = false) {
     videoWrapper.classList.remove('video-zoom'); 
 
     // Poner el loop según sea necesario antes de reproducir
-    // Si es cambio de color, ya empieza en loop
-    videoPlayer.loop = esCambioDeColor; 
+    videoPlayer.loop = esCambioDeColor || !esCambioDeColor; // Siempre en loop, lo corta el timeout
     videoPlayer.onended = null;
     videoPlayer.onloadeddata = null;
 
@@ -584,34 +584,30 @@ function aplicarZoomInicial(esCambioDeColor = false) {
         videoWrapper.classList.add('pantalla-completa-final');
         body.classList.add('modo-video-final');
         
-        // Si es carga inicial, poner el video en loop después del zoom.
-        if (!esCambioDeColor) {
-             videoPlayer.loop = true; 
-        }
+        // El loop debe estar activo para ambas condiciones
+        videoPlayer.loop = true; 
         
         // Activar los Overlays (Nombre, Colores, etc.)
         setTimeout(() => {
-            body.classList.add('show-overlay-elements');
-            // AÑADIR ESTA NUEVA LÍNEA AQUÍ
-            iniciarEfectoMaquinaEscribir('producto-nombre-flotante', 4); // 4 segundos de duración
+            body.classList.add('show-overlay-elements'); 
+            // INICIAR EL EFECTO DE MÁQUINA DE ESCRIBIR
+            iniciarEfectoMaquinaEscribir('producto-nombre-flotante', duracionEfectoTypewriter); 
         }, 50); 
 
         // 5. Temporizador 2: FIN de la reproducción y paso a la pantalla final
-        // ESTE BLOQUE AHORA SE EJECUTA SIEMPRE (Carga Inicial O Cambio de Color)
         setTimeout(() => {
             document.body.classList.remove('show-overlay-elements'); 
             document.getElementById('video-wrapper').style.display = 'none'; 
             document.body.classList.remove('modo-video-final');
             document.getElementById('final-screen-overlay').classList.add('show');
             videoPlayer.pause();
-            // Ya no es necesario videoPlayer.loop = false;
-        }, duracionVisualizacionOverlays);
+        }, duracionVisualizacionOverlays); 
 
     }, duracionDelay); 
 }
     
 // =================================================================
-// FUNCIÓN CORREGIDA: actualizarContenido()
+// FUNCIÓN actualizarContenido() CORREGIDA (V2)
 // =================================================================
 function actualizarContenido(modelo, color, distribuidorID) {
     const videoPlayer = document.getElementById('video-player');
@@ -637,10 +633,13 @@ function actualizarContenido(modelo, color, distribuidorID) {
     // FIX CLAVE 3: Forzar la recarga del video después de cambiar la fuente.
     videoPlayer.load(); 
     
-    document.getElementById('producto-nombre-flotante').textContent = nombreVisual;
     const flotante = document.getElementById('producto-nombre-flotante');
-    flotante.innerHTML = '';
-    flotante.textContent = nombreVisual; // Establece el texto
+    
+    // FIX CLAVE 1: Almacenar el texto a mostrar en un atributo data.
+    flotante.setAttribute('data-original-text', nombreVisual); 
+    
+    // Limpiar el contenido interno (el span de la máquina de escribir anterior)
+    flotante.innerHTML = ''; 
 }
 
 // =================================================================
