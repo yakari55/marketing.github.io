@@ -452,6 +452,34 @@
                 bottom: 20px;
             }
         }
+
+      /* Nuevas animaciones para el efecto Máquina de Escribir */
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: white; } /* Color del cursor */
+        }
+        
+        .typewriter-effect {
+            /* Oculta el desbordamiento para que el texto aparezca escribiéndose */
+            overflow: hidden; 
+            /* La tipografía debe ser monoespacio (opcional pero ayuda al efecto) */
+            font-family: monospace, sans-serif; 
+            /* El borde es el cursor parpadeante */
+            border-right: .15em solid white; 
+            white-space: nowrap; 
+            margin: 0 auto; 
+            /* Se establece al 100% en JS */
+            width: 0; 
+            box-sizing: content-box;
+            display: inline-block; /* Crucial para aplicar el ancho correctamente */
+            /* Se aplica la animación en JS al dispararse */
+        }
+      
     </style>
 </head>
 
@@ -491,42 +519,46 @@ const rutaLogos = './cliente/'; 
 const rutaVideos = './video/'; 
 
 // =================================================================
-// FUNCIÓN NUEVA: Efecto Máquina de Escribir (Typewriter)
+// NUEVA FUNCIÓN: iniciarEfectoMaquinaEscribir()
 // =================================================================
-function typewriterEffect(elementId, text, speed) {
-    const element = document.getElementById(elementId);
-    let i = 0;
-    
-    // Primero, asegura que el elemento esté visible y resetéalo
-    element.textContent = '';
-    element.classList.remove('typing-done');
-    element.style.opacity = '1';
-    element.style.width = '0'; // Reiniciar el ancho para la animación
-    
-    let startTime;
-    const totalDuration = text.length * speed; // Duración total para escribir todo el eslogan
+function iniciarEfectoMaquinaEscribir(elementoID, duracionSegundos) {
+    const element = document.getElementById(elementoID);
+    if (!element) return;
 
-    function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
+    // 1. Limpiar el texto y las clases de la ejecución anterior
+    const textoCompleto = element.textContent;
+    element.textContent = '';
+    element.classList.remove('typewriter-effect'); // Se añade de nuevo más abajo
 
-        // Calcula cuántas letras deberían estar visibles
-        const charsToShow = Math.min(text.length, Math.floor(elapsed / speed));
-        
-        // Actualiza el texto
-        element.textContent = text.substring(0, charsToShow);
-        // Simula la escritura ajustando el ancho basado en el número de caracteres visibles
-        element.style.width = `${charsToShow / text.length * 100}%`;
+    // 2. Crear el contenedor interno con el efecto
+    let spanTypewriter = element.querySelector('.typewriter-span');
+    if (!spanTypewriter) {
+        spanTypewriter = document.createElement('span');
+        spanTypewriter.className = 'typewriter-span';
+        element.appendChild(spanTypewriter);
+    }
+    spanTypewriter.textContent = textoCompleto;
+    
+    // 3. Aplicar las clases y estilos CSS necesarios al span
+    spanTypewriter.classList.add('typewriter-effect');
+    
+    // 4. Calcular duraciones de animación
+    const steps = textoCompleto.length;
+    
+    // Crear la regla CSS de animación directamente para que sea dinámica
+    const styleSheet = document.styleSheets[0];
+    const typingAnimationRule = `typing-${elementoID} ${duracionSegundos}s steps(${steps}, end)`;
+    const caretAnimationRule = `blink-caret .75s step-end infinite`;
+    
+    // Establecer las animaciones dinámicamente
+    spanTypewriter.style.animation = `${typingAnimationRule}, ${caretAnimationRule}`;
 
-        if (charsToShow < text.length) {
-            requestAnimationFrame(step);
-        } else {
-            // Cuando termina, añade la clase para activar el cursor parpadeante
-            element.classList.add('typing-done');
-        }
-    }
-
-    requestAnimationFrame(step);
+    // Asegurar que al final la animación se detenga y el cursor se esconda (opcional)
+    setTimeout(() => {
+        spanTypewriter.style.borderRight = 'none'; // Oculta el cursor
+        spanTypewriter.style.width = '100%'; // Asegura que se vea todo
+        spanTypewriter.style.animation = 'none'; // Detiene la animación
+    }, duracionSegundos * 1000 + 50); 
 }
 
 // =================================================================
@@ -591,6 +623,8 @@ function aplicarZoomInicial(esCambioDeColor = false) { 
         // Activar los Overlays (Nombre, Colores, etc.)
         setTimeout(() => {
             body.classList.add('show-overlay-elements'); 
+        // AÑADIR ESTA NUEVA LÍNEA AQUÍ
+        iniciarEfectoMaquinaEscribir('producto-nombre-flotante', 4); // 4 segundos de duración
         }, 50); 
 
         // 5. Temporizador 2: FIN de la reproducción y paso a la pantalla final
@@ -639,7 +673,11 @@ function actualizarContenido(modelo, color, distribuidorID) {
     // FIX CLAVE 3: Forzar la recarga del video después de cambiar la fuente.
     videoPlayer.load(); 
     
-    document.getElementById('producto-nombre-flotante').textContent = nombreVisual; 
+    document.getElementById('producto-nombre-flotante').textContent = nombreVisual;
+  // FIX: Limpiar el contenedor interno si existe para que no se duplique el texto
+  const flotante = document.getElementById('producto-nombre-flotante');
+  flotante.innerHTML = '';
+  flotante.textContent = nombreVisual; // Establece el texto
 }
 
 // =================================================================
