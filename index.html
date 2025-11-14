@@ -468,7 +468,9 @@ function aplicarZoomInicial(esCambioDeColor = false) {
     const videoPlayer = document.getElementById('video-player');
     const finalScreen = document.getElementById('final-screen-overlay');
 
+    // Duraciones
     const duracionDelay = esCambioDeColor ? 50 : 3000; 
+    // Ahora, 15 segundos (15000ms) para el cambio de color, 10 segundos para la carga inicial.
     const duracionVisualizacionOverlays = esCambioDeColor ? 15000 : 10000; 
 
     // 1. Resetear el estado visual y de pantalla final
@@ -480,8 +482,8 @@ function aplicarZoomInicial(esCambioDeColor = false) {
     body.classList.remove('zoom-active'); 
     videoWrapper.classList.remove('video-zoom'); 
 
-    // FIX 1: Inicialmente no hace loop, pero sí al final del zoom inicial
-    // FIX 2: Para el cambio de color, siempre hace loop.
+    // Poner el loop según sea necesario antes de reproducir
+    // Si es cambio de color, ya empieza en loop
     videoPlayer.loop = esCambioDeColor; 
     videoPlayer.onended = null;
     videoPlayer.onloadeddata = null;
@@ -511,7 +513,7 @@ function aplicarZoomInicial(esCambioDeColor = false) {
         videoWrapper.classList.add('pantalla-completa-final');
         body.classList.add('modo-video-final');
         
-        // FIX 1 (Parte 2): Si es carga inicial, poner el video en loop después del zoom.
+        // Si es carga inicial, poner el video en loop después del zoom.
         if (!esCambioDeColor) {
              videoPlayer.loop = true; 
         }
@@ -522,18 +524,15 @@ function aplicarZoomInicial(esCambioDeColor = false) {
         }, 50); 
 
         // 5. Temporizador 2: FIN de la reproducción y paso a la pantalla final
-        // FIX 2: Solo programar el paso a la pantalla final en la carga inicial.
-        if (!esCambioDeColor) { 
-            setTimeout(() => {
-                document.body.classList.remove('show-overlay-elements'); 
-                document.getElementById('video-wrapper').style.display = 'none'; 
-                document.body.classList.remove('modo-video-final');
-                document.getElementById('final-screen-overlay').classList.add('show');
-                videoPlayer.pause();
-                videoPlayer.loop = false;
-            }, duracionVisualizacionOverlays);
-        }
-        // NOTA: Si es un cambio de color, el video loopeará indefinidamente.
+        // ESTE BLOQUE AHORA SE EJECUTA SIEMPRE (Carga Inicial O Cambio de Color)
+        setTimeout(() => {
+            document.body.classList.remove('show-overlay-elements'); 
+            document.getElementById('video-wrapper').style.display = 'none'; 
+            document.body.classList.remove('modo-video-final');
+            document.getElementById('final-screen-overlay').classList.add('show');
+            videoPlayer.pause();
+            // Ya no es necesario videoPlayer.loop = false;
+        }, duracionVisualizacionOverlays);
 
     }, duracionDelay); 
 }
